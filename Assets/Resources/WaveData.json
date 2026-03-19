@@ -1,0 +1,49 @@
+﻿[
+	{
+		"stageId": 1503,
+		"waveCount": 30,
+		"spawnInterval": 0.5,
+		"phases": [
+			{
+				"fromWave": 1,
+				"toWave": 10,
+				"pathId": 0,
+				"enemyId": 1001,
+				"startCount": 10,
+				"endCount": 30,
+				"delay": 0
+			},
+			{
+				"fromWave": 11,
+				"toWave": 20,
+				"pathId": 0,
+				"enemyId": 1002,
+				"startCount": 10,
+				"endCount": 30,
+				"delay": 0
+			},
+			{
+				"fromWave": 21,
+				"toWave": 30,
+				"pathId": 0,
+				"enemyId": 1003,
+				"startCount": 10,
+				"endCount": 30,
+				"delay": 0
+			}
+		]
+	}
+]
+
+
+
+
+
+
+
+
+
+
+
+
+

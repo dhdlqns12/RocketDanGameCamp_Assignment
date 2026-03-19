@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3a52cc98e92de604898aa8cd59e04a6b, type: 3}
+  m_Name: VolcanoTheme
+  m_EditorClassIdentifier: 
+  ThemeName: VolcanoTheme
+  block: {fileID: 7250027472677463009, guid: c180ebeeb6ee1284a8663445761e9060, type: 3}
+  fixBlock: {fileID: 5738572657297951529, guid: 0f7909f6a169ada4789c9c138f502267, type: 3}
+  buff: {fileID: 7250027472677463009, guid: f8b20c489a367694c812e2e93bb6b0cb, type: 3}
+  spawn: {fileID: 4607196794292154768, guid: c8b0070b6dce36942adf886fb639a5bc, type: 3}
+  commander: {fileID: 212309917539330277, guid: fe0b25a1c3515634c8d3ff54d406cd5f, type: 3}
+  obstacle: {fileID: 3948572052449692371, guid: 9e2fad039dcd18e41a0c6af39b4fce88, type: 3}

@@ -1,0 +1,20 @@
+﻿[
+	{
+		"stageId": 101,
+		"stageName": "1-1",
+		"chapter": 1,
+		"mapId": 101,
+		"waveCount": 10,
+		"startingGold": 100,
+		"startingMineral": 0
+	},
+	{
+		"stageId": 1503,
+		"stageName": "15-3",
+		"chapter": 15,
+		"mapId": 1503,
+		"waveCount": 30,
+		"startingGold": 100,
+		"startingMineral": 0
+	}
+]
