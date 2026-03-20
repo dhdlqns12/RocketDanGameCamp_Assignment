@@ -4,11 +4,6 @@ using StarDefense.Data;
 
 namespace StarDefense.Managers
 {
-    /// <summary>
-    /// GameArea 오브젝트 위에 7x10 그리드를 배치
-    /// GameArea의 Position = 좌하단, gameAreaSize = 영역 크기
-    /// Scene 뷰에서 Gizmo로 그리드를 시각적으로 확인
-    /// </summary>
     public class MapManager : MonoBehaviour
     {
         [Header("Game Area")]
@@ -16,7 +11,7 @@ namespace StarDefense.Managers
         [SerializeField] private Transform gameArea;
 
         [Header("Game Area Size")]
-        [SerializeField] private Vector2 gameAreaSize = new Vector2(12.5f, 17f);
+        [SerializeField] private Vector2 gameAreaSize;
 
         [Header("Chapter Themes")]
         [Tooltip("index 0 = chapter 1, index 1 = chapter 2, ...")]
@@ -46,6 +41,7 @@ namespace StarDefense.Managers
         public List<Vector2Int> SpawnGridPosList => spawnGridPosList;
         public Vector3 CommanderWorldPosition => GridToWorldPosition(commanderGridPos.x, commanderGridPos.y);
 
+        #region 초기화
         /// <summary>
         /// StageInitManager에서 호출 배경 + 맵 + 경로 전부 세팅
         /// </summary>
@@ -60,7 +56,7 @@ namespace StarDefense.Managers
 
         /// <summary>
         /// 챕터에 맞는 배경을 Resources/BG/에서 로드
-        /// BG파일명: BG_Stage_1, BG_Stage_2...
+        /// 파일명 BG_Stage_1, BG_Stage_2...
         /// </summary>
         private void LoadBackground(int chapter)
         {
@@ -127,7 +123,9 @@ namespace StarDefense.Managers
                 }
             }
         }
+        #endregion
 
+        #region 맵 배치
         /// <summary>
         /// 게임 영역(Wall 제외)에 테마 프리팹을 배치
         /// </summary>
@@ -179,6 +177,9 @@ namespace StarDefense.Managers
             };
         }
 
+        #endregion
+
+        #region WayPoint
         /// <summary>
         /// MapData의 paths 데이터에서 각 경로를 생성
         /// </summary>
@@ -242,8 +243,9 @@ namespace StarDefense.Managers
 
             return path;
         }
+        #endregion
 
-        // ── Public API ──
+        #region Public API
         public Vector3 GridToWorldPosition(int x, int y)
         {
             Vector3 origin = gameArea != null ? gameArea.position : Vector3.zero;
@@ -329,5 +331,6 @@ namespace StarDefense.Managers
                 tileObjects[x, y] = tile;
             }
         }
+        #endregion
     }
 }

@@ -1,4 +1,8 @@
 ﻿using UnityEngine;
+using StarDefense.Data;
+using StarDefense.Currency;
+using StarDefense.Enemy;
+using StarDefense.Hero;
 
 namespace StarDefense.Managers
 {
@@ -10,21 +14,121 @@ namespace StarDefense.Managers
         [Header("Scene Managers")]
         [SerializeField] private MapManager mapManager;
         [SerializeField] private WaveManager waveManager;
+        [SerializeField] private CameraController cameraController;
+        [SerializeField] private ProjectilePool projectilePool;
 
+        [Header("지휘관")]
+        [SerializeField] private GameObject commanderPrefab;
+
+        private Gold gold;
+        private Mineral mineral;
+        private Commander commander;
+
+        public Gold Gold => gold;
+        public Mineral Mineral => mineral;
+        public Commander Commander => commander;
+        #region 유니티 Event
         private void Start()
         {
             InitializeStage();
         }
 
+        private void OnDestroy()
+        {
+            EnemyBase.OnEnemyDied -= OnEnemyDied;
+            EnemyBase.OnEnemyReachedEnd -= OnEnemyReachedEnd;
+
+            if (commander != null)
+            {
+                commander.OnCommanderDead -= OnGameOver;
+            }
+        }
+        #endregion
+
+        #region 초기화
         private void InitializeStage()
         {
-            // 1. 맵 먼저 (그리드 + 타일 + 웨이포인트)
-            mapManager.InitMap(stageId);
-            // 2. 웨이브 (맵 경로 데이터 필요)
-            waveManager.Initialize(stageId);
-            // 3. 첫 웨이브 시작
-            waveManager.StartNextWave();
+            StageData stageData = DataManager.GetTable<StageData>().Get(stageId);
 
+            // 맵 (그리드 + 타일 + 웨이포인트 + 배경)
+            mapManager.InitMap(stageId);
+
+            // 카메라 설정
+            cameraController.AdjustCamera();
+
+            // 재화 초기화
+            gold = new Gold();
+            gold.Init(stageData.startingGold);
+
+            mineral = new Mineral();
+            mineral.Init(stageData.startingMineral);
+
+            // 지휘관 자동 배치 (Commander 타일 위치)
+            SpawnCommander();
+
+            // 이벤트 구독
+            EnemyBase.OnEnemyDied += OnEnemyDied;
+            EnemyBase.OnEnemyReachedEnd += OnEnemyReachedEnd;
+
+            // 웨이브 초기화
+            waveManager.Initialize(stageId);
+
+            // 웨이브 시작
+            waveManager.StartWaveSequence();
         }
+
+        private void SpawnCommander()
+        {
+            if (commanderPrefab == null) return;
+
+            Vector3 commanderPos = mapManager.CommanderWorldPosition;
+
+            GameObject obj = Instantiate(commanderPrefab, commanderPos, Quaternion.identity);
+            commander = obj.GetComponent<Commander>();
+
+            if (commander != null)
+            {
+                commander.Init(projectilePool);
+                commander.OnCommanderDead += OnGameOver;
+            }
+        }
+        #endregion
+
+        #region 이벤트 핸들러
+        /// <summary>
+        /// 적 사망 시 골드
+        /// </summary>
+        private void OnEnemyDied(EnemyData enemyData)
+        {
+            gold.AddGold(enemyData.goldReward);
+
+            Debug.Log($"적 사망 골드 +{enemyData.goldReward} 현재 골드: {gold.CurrentGold}");
+        }
+
+        /// <summary>
+        /// 적 경로 끝 도달 시 지휘관 데미지
+        /// </summary>
+        private void OnEnemyReachedEnd(EnemyData enemyData)
+        {
+            if (commander != null)
+            {
+                commander.TakeDamage(enemyData.damage);
+
+                Debug.Log($"적 도달 지휘관 HP: {commander.CurrentHp}/{commander.MaxHp}");
+            }
+        }
+        
+ 
+        /// <summary>
+        /// 지휘관 사망 시 게임 오버
+        /// </summary>
+        private void OnGameOver()
+        {
+            Debug.Log("Game Over!");
+
+            // TODO: 게임 오버 UI 표시
+            Time.timeScale = 0f;
+        }
+        #endregion
     }
 }

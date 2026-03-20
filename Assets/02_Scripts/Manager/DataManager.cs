@@ -26,6 +26,7 @@ namespace StarDefense.Managers
             RegisterTable<MapData>("MapData", d => d.mapId);
             RegisterTable<EnemyData>("EnemyData", d => d.enemyId);
             RegisterTable<WaveData>("WaveData", d => d.stageId);
+            RegisterTable<HeroData>("HeroData", d => d.heroId);
 
             Initialized = true;
             Debug.Log("[DataManager] Initialized.");

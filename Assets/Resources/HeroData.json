@@ -1,0 +1,11 @@
+﻿[
+	{
+		"heroId": 2001,
+		"heroName": "Santa",
+		"rarity": "Common",
+		"tribe": "Human",
+		"attackDamage": 10,
+		"attackSpeed": 1,
+		"attackRange": 3
+	}
+]

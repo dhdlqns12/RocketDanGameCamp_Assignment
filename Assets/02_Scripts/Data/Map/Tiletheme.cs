@@ -3,9 +3,6 @@
 namespace StarDefense.Data
 {
     /// <summary>
-    /// 타일 비주얼 테마. 스테이지 컨셉에 따라 교체 가능.
-    /// 각 필드가 MapData layout 숫자와 대응되는 프리팹.
-    ///
     /// 매핑
     /// 0 = Empty (배치 안함)
     /// 1 = Block, 2 = FixBlock, 3 = Buff,

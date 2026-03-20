@@ -4,44 +4,29 @@ using UnityEngine;
 namespace StarDefense.Enemy
 {
     /// <summary>
-    /// 적 오브젝트 풀 프리팹별로 풀을 관리.
+    /// 적 오브젝트 풀
     /// </summary>
     public class EnemyPool : MonoBehaviour
     {
-        [SerializeField] private int initialPoolSize;
+        [SerializeField] private int initialPoolSize = 10;
 
-        private Dictionary<string, Queue<Enemy>> pools = new Dictionary<string, Queue<Enemy>>();
+        private Dictionary<string, Queue<EnemyBase>> pools = new Dictionary<string, Queue<EnemyBase>>();
         private Dictionary<string, GameObject> prefabMap = new Dictionary<string, GameObject>();
         private Transform poolParent;
 
+        #region 유니티 Event
         private void Awake()
         {
             poolParent = new GameObject("EnemyPool").transform;
             poolParent.SetParent(transform);
         }
+        #endregion
 
+        #region 풀 조회/반환
         /// <summary>
-        /// 프리팹을 등록하고 초기 풀을 생성
+        /// 풀에서 적을 가져옴
         /// </summary>
-        public void RegisterPrefab(string key, GameObject prefab)
-        {
-            if (prefabMap.ContainsKey(key)) return;
-
-            prefabMap[key] = prefab;
-            pools[key] = new Queue<Enemy>();
-
-            for (int i = 0; i < initialPoolSize; i++)
-            {
-                Enemy enemy = CreateEnemy(key);
-                enemy.gameObject.SetActive(false);
-                pools[key].Enqueue(enemy);
-            }
-        }
-
-        /// <summary>
-        /// 풀에서 적을 가져옴 없으면 새로 생성
-        /// </summary>
-        public Enemy Get(string key)
+        public EnemyBase Get(string key)
         {
             if (!pools.ContainsKey(key))
             {
@@ -49,11 +34,11 @@ namespace StarDefense.Enemy
                 return null;
             }
 
-            Queue<Enemy> pool = pools[key];
+            Queue<EnemyBase> pool = pools[key];
 
             if (pool.Count > 0)
             {
-                Enemy enemy = pool.Dequeue();
+                EnemyBase enemy = pool.Dequeue();
                 enemy.gameObject.SetActive(true);
                 return enemy;
             }
@@ -64,17 +49,39 @@ namespace StarDefense.Enemy
         /// <summary>
         /// 적을 풀에 반환
         /// </summary>
-        public void Return(Enemy enemy, string key)
+        public void Return(EnemyBase enemy, string key)
         {
             enemy.gameObject.SetActive(false);
             pools[key].Enqueue(enemy);
         }
+        #endregion
 
-        private Enemy CreateEnemy(string key)
+        #region 프리팹 등록/생성
+        /// <summary>
+        /// 프리팹을 등록하고 초기 풀을 생성
+        /// </summary>
+        public void RegisterPrefab(string key, GameObject prefab)
+        {
+            if (prefabMap.ContainsKey(key)) return;
+
+            prefabMap[key] = prefab;
+            pools[key] = new Queue<EnemyBase>();
+
+            for (int i = 0; i < initialPoolSize; i++)
+            {
+                EnemyBase enemy = CreateEnemy(key);
+                enemy.gameObject.SetActive(false);
+                pools[key].Enqueue(enemy);
+            }
+        }
+
+        private EnemyBase CreateEnemy(string key)
         {
             GameObject obj = Instantiate(prefabMap[key], poolParent);
-            Enemy enemy = obj.GetComponent<Enemy>();
+            EnemyBase enemy = obj.GetComponent<EnemyBase>();
+            enemy.SetPool(this, key);
             return enemy;
         }
+        #endregion
     }
 }

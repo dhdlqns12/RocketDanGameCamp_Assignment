@@ -1,7 +1,27 @@
 ﻿namespace StarDefense.Core
 {
-    public static class Enums
+    #region Hero
+    public enum HeroRarity
     {
-
+        Common,
+        Rare,
+        Epic,
+        Unique,
+        Legend
     }
+
+    public enum HeroTribe
+    {
+        Human,
+        Alien
+    }
+    #endregion
+
+    #region Commander
+    public enum AttackStrategyType
+    {
+        Single,
+        Splash
+    }
+    #endregion
 }

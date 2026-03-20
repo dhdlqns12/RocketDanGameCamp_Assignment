@@ -6,33 +6,34 @@ using StarDefense.Enemy;
 
 namespace StarDefense.Managers
 {
-    /// <summary>
-    /// 웨이브 진행 및 적 스폰 관리
-    /// WaveData의 phases에서 필요한 적 프리팹을 자동 로드한
-    /// 프리팹 경로: Resources/Enemy/{enemyId}
-    /// </summary>
     public class WaveManager : MonoBehaviour
     {
         [Header("References")]
         [SerializeField] private MapManager mapManager;
         [SerializeField] private EnemyPool enemyPool;
 
+        [Header("Wave Settings")]
+        [SerializeField] private float firstWaveDelay = 10f;
+        [SerializeField] private float betweenWaveDelay = 10f;
+
         private WaveData waveData;
         private int currentWaveIndex;
-        private int aliveEnemyCount;
         private bool isWaveActive;
 
         public int CurrentWave => currentWaveIndex + 1;
         public int TotalWaves => waveData != null ? waveData.waveCount : 0;
         public bool IsWaveActive => isWaveActive;
+        public float FirstWaveDelay => firstWaveDelay;
+        public float BetweenWaveDelay => betweenWaveDelay;
 
+        #region 초기화
         public void Initialize(int mStageId)
         {
             waveData = DataManager.GetTable<WaveData>().Get(mStageId);
 
             if (waveData == null)
             {
-                Debug.LogError($"웨이브 데이터 없음: {mStageId}");
+                Debug.LogError($"웨이브 데이터 찾을 수 없음: {mStageId}");
                 return;
             }
 
@@ -41,53 +42,60 @@ namespace StarDefense.Managers
 
             RegisterEnemyPrefabs();
         }
+        #endregion
 
+        #region 웨이브 시작 관리
         /// <summary>
-        /// phases에서 사용하는 enemyId를 수집하여 프리팹을 Resources에서 자동 로드.
-        /// 프리팹 경로: Resources/Enemy/{enemyId}
+        /// 웨이브 자동 진행을 시작
         /// </summary>
-        private void RegisterEnemyPrefabs()
+        public void StartWaveSequence()
         {
-            HashSet<int> registeredIds = new HashSet<int>();
+            StartCoroutine(WaveSequenceCoroutine());
+        }
 
-            foreach (WavePhase phase in waveData.phases)
+        private IEnumerator WaveSequenceCoroutine()
+        {
+            yield return new WaitForSeconds(firstWaveDelay);
+
+            while (currentWaveIndex < TotalWaves)
             {
-                if (registeredIds.Contains(phase.enemyId)) continue;
+                yield return StartCoroutine(RunWaveCoroutine());
 
-                GameObject prefab = Resources.Load<GameObject>($"Enemy/{phase.enemyId}");
+                currentWaveIndex++;
 
-                if (prefab == null)
+                if (currentWaveIndex >= TotalWaves)
                 {
-                    Debug.LogError($"적 프리팹 없음/{phase.enemyId}");
-                    continue;
+                    OnAllWavesComplete();
+                    yield break;
                 }
 
-                enemyPool.RegisterPrefab(phase.enemyId.ToString(), prefab);
-                registeredIds.Add(phase.enemyId);
+                yield return new WaitForSeconds(betweenWaveDelay);
             }
         }
 
-        public void StartNextWave()
+        private IEnumerator RunWaveCoroutine()
         {
-            if (isWaveActive) return;
-            if (currentWaveIndex >= TotalWaves)
-            {
-                return;
-            }
-
             isWaveActive = true;
-            aliveEnemyCount = 0;
             int waveNumber = currentWaveIndex + 1;
+
+            // 각 phase 스폰 시작
+            List<Coroutine> spawnCoroutines = new List<Coroutine>();
 
             foreach (WavePhase phase in waveData.phases)
             {
                 if (waveNumber < phase.fromWave || waveNumber > phase.toWave) continue;
 
                 int count = CalculateCount(phase, waveNumber);
-                aliveEnemyCount += count;
-
-                StartCoroutine(SpawnPhaseCoroutine(phase, count));
+                spawnCoroutines.Add(StartCoroutine(SpawnPhaseCoroutine(phase, count)));
             }
+
+            // 모든 스폰 코루틴 완료 대기
+            foreach (Coroutine co in spawnCoroutines)
+            {
+                yield return co;
+            }
+
+            isWaveActive = false;
         }
 
         private int CalculateCount(WavePhase phase, int waveNumber)
@@ -98,7 +106,9 @@ namespace StarDefense.Managers
             float t = (float)(waveNumber - phase.fromWave) / (phase.toWave - phase.fromWave);
             return Mathf.RoundToInt(Mathf.Lerp(phase.startCount, phase.endCount, t));
         }
+        #endregion
 
+        #region 적 소환
         private IEnumerator SpawnPhaseCoroutine(WavePhase phase, int count)
         {
             if (phase.delay > 0)
@@ -111,7 +121,6 @@ namespace StarDefense.Managers
 
             if (enemyData == null || waypoints == null)
             {
-                Debug.LogError($"잘못된 Phase: enemyId={phase.enemyId}, pathId={phase.pathId}");
                 yield break;
             }
 
@@ -128,34 +137,38 @@ namespace StarDefense.Managers
 
         private void SpawnEnemy(EnemyData enemyData, List<Vector3> waypoints, int enemyId)
         {
-            Enemy.Enemy enemy = enemyPool.Get(enemyId.ToString());
+            EnemyBase enemy = enemyPool.Get(enemyId.ToString());
             if (enemy == null) return;
 
             enemy.Initialize(enemyData, waypoints);
         }
 
-        public void OnEnemyRemoved()
+        private void OnAllWavesComplete()
         {
-            aliveEnemyCount--;
-
-            if (aliveEnemyCount <= 0)
-            {
-                isWaveActive = false;
-                currentWaveIndex++;
-                OnWaveComplete();
-            }
+            Debug.Log("모든 웨이브 클리어, 승리!");
+            // TODO: 승리 이벤트 발행
         }
 
-        private void OnWaveComplete()
+        private void RegisterEnemyPrefabs()
         {
-            if (currentWaveIndex >= TotalWaves)
+            HashSet<int> registeredIds = new HashSet<int>();
+
+            foreach (WavePhase phase in waveData.phases)
             {
-                Debug.Log("모든 웨이브 클리어 승리!");
-            }
-            else
-            {
-                Debug.Log($"현재 웨이브: {currentWaveIndex}/전체 웨이브: {TotalWaves}");
+                if (registeredIds.Contains(phase.enemyId)) continue;
+
+                GameObject prefab = Resources.Load<GameObject>($"Enemy/{phase.enemyId}");
+
+                if (prefab == null)
+                {
+                    Debug.LogError($"적 프리팹 찾을 수 없음: Enemy/{phase.enemyId}");
+                    continue;
+                }
+
+                enemyPool.RegisterPrefab(phase.enemyId.ToString(), prefab);
+                registeredIds.Add(phase.enemyId);
             }
         }
+        #endregion
     }
 }

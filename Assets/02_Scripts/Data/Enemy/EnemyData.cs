@@ -2,9 +2,6 @@
 
 namespace StarDefense.Data
 {
-    /// <summary>
-    /// 적 데이터. DataManager에서 테이블로 관리.
-    /// </summary>
     [Serializable]
     public class EnemyData
     {

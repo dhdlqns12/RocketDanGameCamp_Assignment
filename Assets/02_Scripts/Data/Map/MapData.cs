@@ -26,9 +26,8 @@ namespace StarDefense.Data
     }
 
     /// <summary>
-    /// 적 이동 경로. 코너 포인트만 지정하면 사이 직선은 코드가 채운다.
-    /// corners[0] = 스폰 위치, corners[마지막] = 지휘관 위치.
-    /// 좌표는 게임 영역 기준 (Wall 제외, 좌하단 0,0).
+    /// 적 이동 경로
+    /// corners[0] = 스폰 위치, corners[마지막] = 지휘관 위치
     /// </summary>
     [Serializable]
     public class EnemyPath

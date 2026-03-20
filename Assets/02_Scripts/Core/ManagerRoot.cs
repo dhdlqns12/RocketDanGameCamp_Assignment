@@ -11,6 +11,7 @@ namespace StarDefense.Core
     /// </summary>
     public class ManagerRoot : Singleton<ManagerRoot>
     {
+        #region 초기화
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void Bootstrap()
         {
@@ -22,5 +23,6 @@ namespace StarDefense.Core
         {
             // MonoBehaviour 전역 매니저 초기화
         }
+        #endregion
     }
 }
