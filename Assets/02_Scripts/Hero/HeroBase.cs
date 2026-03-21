@@ -9,7 +9,7 @@ namespace StarDefense.Hero
     /// HeroData에서 스탯, heroId 기반으로 스프라이트 동적 로드
     /// Hero: Resources/Sprite/Hero/{heroId}
     /// Projectile: Resources/Sprite/Projectile/{heroId + 1000}
-    /// 추후 상태 전환이 추가 되면 FSM으로 구현 예정
+    /// 추후 상태전환 늘어나면 FSM으로 변경 고려
     /// </summary>
     public class HeroBase : MonoBehaviour, IHero
     {
@@ -99,6 +99,14 @@ namespace StarDefense.Hero
             {
                 attackStrategy = new SingleAttackStrategy();
             }
+        }
+
+        /// <summary>
+        /// 버프 타일 효과 적용. 공속 증가 비율 (0.3 = 30%)
+        /// </summary>
+        public void ApplyBuffTile(float attackSpeedBonus)
+        {
+            attackSpeed *= (1f + attackSpeedBonus);
         }
         #endregion
 

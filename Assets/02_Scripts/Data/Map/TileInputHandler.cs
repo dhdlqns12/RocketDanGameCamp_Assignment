@@ -1,11 +1,15 @@
 ﻿using UnityEngine;
 using UnityEngine.EventSystems;
 using StarDefense.Hero;
+using StarDefense.Currency;
 using StarDefense.Managers;
 using StarDefense.UI;
 
 namespace StarDefense.Map
 {
+    /// <summary>
+    /// 타일 터치 감지
+    /// </summary>
     [RequireComponent(typeof(MapManager))]
     public class TileInputHandler : MonoBehaviour
     {
@@ -13,11 +17,24 @@ namespace StarDefense.Map
         [SerializeField] private HeroUpgradeManager upgradeManager;
         [SerializeField] private SummonUI summonUI;
         [SerializeField] private UpgradeUI upgradeUI;
+        [SerializeField] private RepairUI repairUI;
+
+        [Header("수리 비용")]
+        [SerializeField] private int repairCost = 30;
 
         private MapManager mapManager;
+        private Gold gold;
         private Vector2Int selectedTile;
         private HeroBase selectedHero;
         private bool hasTileSelected;
+        private bool hasRepairSelected;
+
+        #region 초기화
+        public void Init(Gold mGold)
+        {
+            gold = mGold;
+        }
+        #endregion
 
         #region 유니티 Event
         private void Awake()
@@ -43,18 +60,32 @@ namespace StarDefense.Map
 
             Vector2Int gridPos = mapManager.WorldToGridPosition(worldPos);
 
+            HideAllUI();
+
             HeroBase hero = FindHeroAtGrid(gridPos);
 
             if (hero != null && upgradeManager.CanUpgrade(hero))
             {
                 selectedHero = hero;
                 hasTileSelected = false;
-
-                summonUI.Hide();
+                hasRepairSelected = false;
 
                 Vector3 tileWorldPos = mapManager.GridToWorldPosition(gridPos.x, gridPos.y);
                 upgradeUI.Show(tileWorldPos);
+                return;
+            }
 
+            int tileType = mapManager.GetTileType(gridPos.x, gridPos.y);
+
+            if (tileType == 2)
+            {
+                selectedTile = gridPos;
+                hasRepairSelected = true;
+                hasTileSelected = false;
+                selectedHero = null;
+
+                Vector3 tileWorldPos = mapManager.GridToWorldPosition(gridPos.x, gridPos.y);
+                repairUI.Show(tileWorldPos, repairCost);
                 return;
             }
 
@@ -62,20 +93,24 @@ namespace StarDefense.Map
             {
                 selectedTile = gridPos;
                 hasTileSelected = true;
+                hasRepairSelected = false;
                 selectedHero = null;
-
-                upgradeUI.Hide();
 
                 Vector3 tileWorldPos = mapManager.GridToWorldPosition(gridPos.x, gridPos.y);
                 summonUI.Show(tileWorldPos, summonManager.SummonCost);
-
                 return;
             }
 
+            hasTileSelected = false;
+            hasRepairSelected = false;
+            selectedHero = null;
+        }
+
+        private void HideAllUI()
+        {
             summonUI.Hide();
             upgradeUI.Hide();
-            hasTileSelected = false;
-            selectedHero = null;
+            repairUI.Hide();
         }
 
         /// <summary>
@@ -100,13 +135,15 @@ namespace StarDefense.Map
         }
         #endregion
 
-        #region 소환/승급 확인
-        /// <summary>
-        /// 소환 UI에서 소환 버튼 눌렀을 때 호출
-        /// </summary>
+        #region 소환/승급/수리 확인
         public void OnSummonConfirmed()
         {
             if (!hasTileSelected) return;
+
+            if (!gold.SpendGold(summonManager.SummonCost))
+            {
+                return;
+            }
 
             summonManager.TrySummon(selectedTile.x, selectedTile.y);
 
@@ -114,9 +151,6 @@ namespace StarDefense.Map
             hasTileSelected = false;
         }
 
-        /// <summary>
-        /// 승급 UI에서 승급 버튼 눌렀을 때 호출
-        /// </summary>
         public void OnUpgradeConfirmed()
         {
             if (selectedHero == null) return;
@@ -125,6 +159,21 @@ namespace StarDefense.Map
 
             upgradeUI.Hide();
             selectedHero = null;
+        }
+
+        public void OnRepairConfirmed()
+        {
+            if (!hasRepairSelected) return;
+
+            if (!gold.SpendGold(repairCost))
+            {
+                return;
+            }
+
+            mapManager.RepairTile(selectedTile.x, selectedTile.y);
+
+            repairUI.Hide();
+            hasRepairSelected = false;
         }
         #endregion
     }

@@ -3,6 +3,7 @@ using StarDefense.Data;
 using StarDefense.Currency;
 using StarDefense.Enemy;
 using StarDefense.Hero;
+using StarDefense.Map;
 
 namespace StarDefense.Managers
 {
@@ -18,6 +19,7 @@ namespace StarDefense.Managers
         [SerializeField] private ProjectilePool projectilePool;
         [SerializeField] private HeroSummonManager summonManager;
         [SerializeField] private HeroUpgradeManager upgradeManager;
+        [SerializeField] private TileInputHandler tileInputHandler;
 
         [Header("지휘관")]
         [SerializeField] private GameObject commanderPrefab;
@@ -29,7 +31,6 @@ namespace StarDefense.Managers
         public Gold Gold => gold;
         public Mineral Mineral => mineral;
         public Commander Commander => commander;
-
         #region 유니티 Event
         private void Start()
         {
@@ -77,9 +78,12 @@ namespace StarDefense.Managers
             upgradeManager.Init(summonManager, projectilePool, mapManager);
 
             // 소환 매니저 초기화
-            summonManager.Init(gold, projectilePool, mapManager, upgradeManager);
+            summonManager.Init(projectilePool, mapManager, upgradeManager);
 
-            // 웨이브 (맵 경로 데이터 필요)
+            // 타일 입력 초기화 
+            tileInputHandler.Init(gold);
+
+            // 웨이브 
             waveManager.Init(stageId);
 
             // 웨이브 시작
@@ -113,8 +117,6 @@ namespace StarDefense.Managers
         private void OnEnemyDied(EnemyData enemyData)
         {
             gold.AddGold(enemyData.goldReward);
-
-            Debug.Log($"[StageInitManager] 적 사망 | 골드 +{enemyData.goldReward} | 현재 골드: {gold.CurrentGold}");
         }
 
         /// <summary>
@@ -125,8 +127,6 @@ namespace StarDefense.Managers
             if (commander != null)
             {
                 commander.TakeDamage(enemyData.damage);
-
-                Debug.Log($"[StageInitManager] 적 도달 | -{enemyData.damage} | 지휘관 HP: {commander.CurrentHp}/{commander.MaxHp}");
             }
         }
 
@@ -135,7 +135,7 @@ namespace StarDefense.Managers
         /// </summary>
         private void OnGameOver()
         {
-            Debug.Log("[StageInitManager] Game Over!");
+            Debug.Log("Game Over!");
 
             // TODO: 게임 오버 UI 표시
             Time.timeScale = 0f;

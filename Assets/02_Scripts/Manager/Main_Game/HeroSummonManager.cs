@@ -1,18 +1,14 @@
-﻿using System.Collections.Generic;
-using UnityEngine;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using StarDefense.Core;
 using StarDefense.Data;
-using StarDefense.Currency;
 using StarDefense.Hero;
-using StarDefense.Managers;
+using System.Collections.Generic;
+using UnityEngine;
 
 namespace StarDefense.Managers
 {
     /// <summary>
-    /// 영웅 소환 매니저. 데이터 드리븐 방식
-    /// 범용 HeroBase 프리팹 1개 + HeroData에서 모든 정보 로드
-    /// 확률 테이블 기반 등급 결정 → 해당 등급 유닛 풀에서 랜덤 소환
+    /// 영웅 소환 매니저
     /// </summary>
     public class HeroSummonManager : MonoBehaviour
     {
@@ -24,25 +20,22 @@ namespace StarDefense.Managers
         private Dictionary<HeroRarity, List<HeroData>> heroDataByRarity = new Dictionary<HeroRarity, List<HeroData>>();
         private Dictionary<HeroRarity, float> rarityRates = new Dictionary<HeroRarity, float>();
 
-        private Gold gold;
         private ProjectilePool projectilePool;
         private MapManager mapManager;
         private HeroUpgradeManager upgradeManager;
 
         public int SummonCost => summonCost;
         public GameObject HeroPrefab => heroPrefab;
+
         #region 초기화
-        public void Init(Gold mGold, ProjectilePool mProjectilePool, MapManager mMapManager, HeroUpgradeManager mUpgradeManager)
+        public void Init(ProjectilePool mProjectilePool, MapManager mMapManager, HeroUpgradeManager mUpgradeManager)
         {
-            gold = mGold;
             projectilePool = mProjectilePool;
             mapManager = mMapManager;
             upgradeManager = mUpgradeManager;
 
             InitRarityRates();
             ClassifyHeroData();
-
-            Debug.Log($"[HeroSummonManager] 초기화 | 소환 비용: {summonCost}g");
         }
 
         private void InitRarityRates()
@@ -73,8 +66,6 @@ namespace StarDefense.Managers
             {
                 HeroRarity rarity = System.Enum.Parse<HeroRarity>(data.rarity);
                 heroDataByRarity[rarity].Add(data);
-
-                Debug.Log($"[HeroSummonManager] 등록 | {data.heroName} | {rarity}");
             }
         }
         #endregion
@@ -87,15 +78,6 @@ namespace StarDefense.Managers
         {
             if (!mapManager.CanPlaceHero(gridX, gridY))
             {
-                Debug.Log("[HeroSummonManager] 소환 불가: 배치할 수 없는 타일");
-
-                return false;
-            }
-
-            if (!gold.SpendGold(summonCost))
-            {
-                Debug.Log("[HeroSummonManager] 소환 불가: 골드 부족");
-
                 return false;
             }
 
@@ -104,9 +86,7 @@ namespace StarDefense.Managers
 
             if (heroData == null)
             {
-                Debug.LogError($"[HeroSummonManager] {rarity} 등급 데이터 없음");
-                gold.AddGold(summonCost);
-
+                Debug.LogError($"{rarity} 등급 데이터 없음");
                 return false;
             }
 
@@ -117,11 +97,15 @@ namespace StarDefense.Managers
 
             hero.Init(heroData, projectilePool);
 
+            // 버프 타일이면 공속 30% 증가
+            if (mapManager.IsBuffTile(gridX, gridY))
+            {
+                hero.ApplyBuffTile(0.3f);
+            }
+
             upgradeManager.RegisterHero(hero);
 
             mapManager.SetOccupied(gridX, gridY, true);
-
-            Debug.Log($"[HeroSummonManager] 소환 성공 | {rarity} | {heroData.heroName} | 위치: ({gridX},{gridY}) | 남은 골드: {gold.CurrentGold}");
 
             return true;
         }
@@ -174,8 +158,6 @@ namespace StarDefense.Managers
             rarityRates[HeroRarity.Rare] += bonus;
             rarityRates[HeroRarity.Epic] += bonus;
             rarityRates[HeroRarity.Unique] += bonus;
-
-            Debug.Log($"[HeroSummonManager] 확률 강화 | Common: {rarityRates[HeroRarity.Common]:F0}/10000 | Rare: {rarityRates[HeroRarity.Rare]:F0}/10000 | Epic: {rarityRates[HeroRarity.Epic]:F0}/10000 | Unique: {rarityRates[HeroRarity.Unique]:F0}/10000");
         }
         #endregion
     }

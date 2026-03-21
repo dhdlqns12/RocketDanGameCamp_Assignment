@@ -69,7 +69,10 @@ namespace StarDefense.Managers
         }
         #endregion
 
-        #region 승급 가능 여부
+        #region 승급 duqn
+        /// <summary>
+        /// 해당 영웅이 승급 가능한지 확인
+        /// </summary>
         public bool CanUpgrade(HeroBase hero)
         {
             if (!hero.CanUpgrade) return false;
@@ -79,6 +82,9 @@ namespace StarDefense.Managers
             return heroesByIdMap[hero.heroId].Count >= 2;
         }
 
+        /// <summary>
+        /// 같은 heroId 유닛들의 UpgradeSprite 활성/비활성 처리
+        /// </summary>
         private void UpdateUpgradeIndicators(int heroId)
         {
             if (!heroesByIdMap.ContainsKey(heroId)) return;
@@ -93,7 +99,10 @@ namespace StarDefense.Managers
         }
         #endregion
 
-        #region 승급 실행
+        #region 승급
+        /// <summary>
+        /// 클릭한 영웅 위치에서 승급
+        /// </summary>
         public bool TryUpgrade(HeroBase clickedHero)
         {
             if (!CanUpgrade(clickedHero)) return false;
@@ -134,6 +143,12 @@ namespace StarDefense.Managers
             HeroBase newHero = heroObj.GetComponent<HeroBase>();
 
             newHero.Init(nextHeroData, projectilePool);
+
+            // 버프 타일이면 공속 버프 유지
+            if (mapManager.IsBuffTile(gridPos.x, gridPos.y))
+            {
+                newHero.ApplyBuffTile(0.3f);
+            }
 
             RegisterHero(newHero);
 

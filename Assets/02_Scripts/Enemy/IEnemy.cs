@@ -3,7 +3,7 @@
 namespace StarDefense.Enemy
 {
     /// <summary>
-    /// 적 공통 인터페이스 영웅 공격 시스템에서 타겟 타입으로 사용
+    /// 적 공통 인터페이스
     /// </summary>
     public interface IEnemy
     {
