@@ -65,8 +65,6 @@ namespace StarDefense.Hero
 
             LoadSprites(heroData);
             SetAttackStrategy();
-
-            Debug.Log($"[HeroBase] Init | {heroData.heroName} | {rarity} | {tribe} | dmg: {attackDamage} | spd: {attackSpeed} | range: {attackRange} | splash: {splashRadius}");
         }
 
         /// <summary>

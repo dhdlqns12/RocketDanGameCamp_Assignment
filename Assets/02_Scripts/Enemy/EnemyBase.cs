@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
 using StarDefense.Data;
 using StarDefense.Enemy.State;
-
 namespace StarDefense.Enemy
 {
     public abstract class EnemyBase : MonoBehaviour, IEnemy
@@ -94,6 +94,10 @@ namespace StarDefense.Enemy
         #endregion
 
         #region 데미지
+        private static int FLASH_AMOUNT = Shader.PropertyToID("_FlashAmount");
+        private MaterialPropertyBlock mpb;
+        private Tweener flashTween;
+
         public virtual void TakeDamage(int damage)
         {
             if (!isAlive) return;
@@ -105,6 +109,44 @@ namespace StarDefense.Enemy
                 currentHp = 0;
                 isAlive = false;
                 ChangeState(dieState);
+                return;
+            }
+
+            HitFlash();
+        }
+
+        /// <summary>
+        /// 피격 시 흰색 플래시
+        /// </summary>
+        private void HitFlash()
+        {
+            if (spriteRenderer == null) return;
+
+            if (mpb == null) mpb = new MaterialPropertyBlock();
+
+            flashTween?.Kill();
+
+            float flash = 1f;
+            flashTween = DOTween.To(() => flash, x =>
+            {
+                flash = x;
+                spriteRenderer.GetPropertyBlock(mpb);
+                mpb.SetFloat(FLASH_AMOUNT, flash);
+                spriteRenderer.SetPropertyBlock(mpb);
+            }, 0f, 0.15f).SetEase(Ease.OutQuad);
+        }
+
+        /// <summary>
+        /// 풀 반환 시 플래시 초기화
+        /// </summary>
+        private void ResetFlash()
+        {
+            flashTween?.Kill();
+
+            if (spriteRenderer != null && mpb != null)
+            {
+                mpb.SetFloat(FLASH_AMOUNT, 0f);
+                spriteRenderer.SetPropertyBlock(mpb);
             }
         }
         #endregion
@@ -136,6 +178,7 @@ namespace StarDefense.Enemy
         public void ReturnToPool()
         {
             currentState = null;
+            ResetFlash();
 
             if (pool != null)
             {

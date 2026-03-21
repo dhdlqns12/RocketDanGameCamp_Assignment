@@ -17,8 +17,6 @@ namespace StarDefense.Currency
             currentGold = startGold;
 
             OnGoldChanged?.Invoke(currentGold, startGold);
-
-            Debug.Log($"[Gold] 초기화 | gold: {currentGold}");
         }
         #endregion
 

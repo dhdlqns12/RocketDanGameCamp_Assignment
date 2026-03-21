@@ -199,8 +199,6 @@ namespace StarDefense.Managers
 
                 List<Vector3> path = BuildPathFromCorners(enemyPath.corners);
                 waypointsList.Add(path);
-
-                Debug.Log($"[MapManager] Path {enemyPath.pathId}: {enemyPath.corners.Length} corners → {path.Count} waypoints");
             }
         }
 

@@ -17,8 +17,6 @@ namespace StarDefense.Currency
             currentMineral = startMineral;
 
             OnMineralChanged?.Invoke(currentMineral, startMineral);
-
-            Debug.Log($"[Mineral] 초기화 | mineral: {currentMineral}");
         }
         #endregion
 

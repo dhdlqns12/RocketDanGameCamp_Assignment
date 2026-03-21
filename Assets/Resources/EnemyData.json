@@ -2,7 +2,7 @@
 	{
 		"enemyId": 1001,
 		"enemyName": "orc",
-		"hp": 50,
+		"hp": 200,
 		"moveSpeed": 2,
 		"damage": 100,
 		"goldReward": 1,
@@ -11,7 +11,7 @@
 	{
 		"enemyId": 1002,
 		"enemyName": "orc_Warrior",
-		"hp": 100,
+		"hp": 300,
 		"moveSpeed": 1.5,
 		"damage": 150,
 		"goldReward": 1,
@@ -20,7 +20,7 @@
 	{
 		"enemyId": 1003,
 		"enemyName": "orc_Rougue",
-		"hp": 150,
+		"hp": 400,
 		"moveSpeed": 1.5,
 		"damage": 200,
 		"goldReward": 1,

@@ -29,7 +29,6 @@ namespace StarDefense.Managers
             RegisterTable<HeroData>("HeroData", d => d.heroId);
 
             Initialized = true;
-            Debug.Log("[DataManager] Initialized.");
         }
 
         /// <summary>
