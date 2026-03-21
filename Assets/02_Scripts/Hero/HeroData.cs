@@ -1,8 +1,9 @@
 ﻿using System;
+using StarDefense.Core;
 namespace StarDefense.Data
 {
     /// <summary>
-    /// 영웅 데이터. DataManager에서 테이블로 관리
+    /// 영웅 데이터
     /// </summary>
     [Serializable]
     public class HeroData
@@ -14,5 +15,8 @@ namespace StarDefense.Data
         public int attackDamage;
         public float attackSpeed;
         public float attackRange;
+        public float splashRadius;
+        public string heroSprite;
+        public string projectileSprite;
     }
 }

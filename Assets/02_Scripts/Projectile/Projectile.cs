@@ -18,13 +18,7 @@ namespace StarDefense.Hero
         private ProjectilePool pool;
 
         #region 초기화
-
-        public void Initialize(Vector3 mTargetPosition, int mDamage, EnemyBase mTarget, Sprite mSprite)
-        {
-            Initialize(mTargetPosition, mDamage, mTarget, mSprite, 0f);
-        }
-
-        public void Initialize(Vector3 mTargetPosition, int mDamage, EnemyBase mTarget, Sprite mSprite, float mSplashRadius)
+        public void Init(Vector3 mTargetPosition, int mDamage, EnemyBase mTarget, Sprite mSprite, float mSplashRadius)
         {
             targetPosition = mTargetPosition;
             damage = mDamage;

@@ -8,10 +8,10 @@ namespace StarDefense.Hero
     public class Commander : MonoBehaviour
     {
         [Header("지휘관 설정")]
-        [SerializeField] private int maxHp = 100;
-        [SerializeField] private float attackRange = 3f;
-        [SerializeField] private float attackSpeed = 1f;
-        [SerializeField] private int attackDamage = 10;
+        [SerializeField] private int maxHp;
+        [SerializeField] private float attackRange;
+        [SerializeField] private float attackSpeed;
+        [SerializeField] private int attackDamage;
         [SerializeField] private Sprite projectileSprite;
 
         [Header("공격 전략")]

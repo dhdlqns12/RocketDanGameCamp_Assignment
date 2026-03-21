@@ -99,9 +99,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHp: 1000
   attackRange: 5
-  attackSpeed: 1
+  attackSpeed: 1.15
   attackDamage: 100
-  projectileSprite: {fileID: 21300000, guid: 4c426d0e9843fe04e995ee968f1f3baf, type: 3}
+  projectileSprite: {fileID: 21300000, guid: ca3fab3f39d7efa4fb1ffb67215e0103, type: 3}
   strategyType: 0
   splashRadius: 0
   enemyLayer:

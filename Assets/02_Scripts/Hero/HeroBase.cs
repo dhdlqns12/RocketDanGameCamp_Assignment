@@ -4,25 +4,32 @@ using StarDefense.Enemy;
 
 namespace StarDefense.Hero
 {
+    /// <summary>
+    /// 영웅 클래스. 데이터 드리븐 방식
+    /// HeroData에서 스탯, heroId 기반으로 스프라이트 동적 로드
+    /// Hero: Resources/Sprite/Hero/{heroId}
+    /// Projectile: Resources/Sprite/Projectile/{heroId + 1000}
+    /// 추후 상태 전환이 추가 되면 FSM으로 구현 예정
+    /// </summary>
     public class HeroBase : MonoBehaviour, IHero
     {
-        [Header("영웅 설정")]
-        [SerializeField] private int heroId;
-        [SerializeField] private SpriteRenderer spriteRenderer;
-        [SerializeField] private HeroTribe tribe;
-        [SerializeField] private Sprite projectileSprite;
-
-        [Header("범위 공격 설정")]
-        [SerializeField] private float splashRadius;
-
-        [Header("탐색")]
+        [Header("적 체크")]
         [SerializeField] private LayerMask enemyLayer;
 
+        [Header("승급 표시")]
+        [SerializeField] private GameObject upgradeIndicator;
+
+        private SpriteRenderer spriteRenderer;
+        private HeroTribe tribe;
+        private Sprite projectileSprite;
+
+        public int heroId { get; private set; }
 
         private HeroRarity rarity;
         private float attackRange;
         private float attackSpeed;
         private int attackDamage;
+        private float splashRadius;
 
         private static readonly Collider2D[] hitBuffer = new Collider2D[200];
         private EnemyBase currentTarget;
@@ -42,46 +49,60 @@ namespace StarDefense.Hero
 
         #region 초기화
         /// <summary>
-        /// HeroData로 영웅 스탯을 초기화
+        /// HeroData에서 스탯 + heroId 기반 스프라이트 초기화
         /// </summary>
-        public void Initialize(Data.HeroData heroData, ProjectilePool mProjectilePool)
+        public void Init(Data.HeroData heroData, ProjectilePool mProjectilePool)
         {
+            heroId = heroData.heroId;
             rarity = System.Enum.Parse<HeroRarity>(heroData.rarity);
+            tribe = System.Enum.Parse<HeroTribe>(heroData.tribe);
             attackDamage = heroData.attackDamage;
             attackSpeed = heroData.attackSpeed;
             attackRange = heroData.attackRange;
+            splashRadius = heroData.splashRadius;
             projectilePool = mProjectilePool;
             attackTimer = 1f / attackSpeed;
 
+            LoadSprites(heroData);
             SetAttackStrategy();
+
+            Debug.Log($"[HeroBase] Init | {heroData.heroName} | {rarity} | {tribe} | dmg: {attackDamage} | spd: {attackSpeed} | range: {attackRange} | splash: {splashRadius}");
         }
 
         /// <summary>
-        /// tribe에 따라 공격 전략을 자동 결정
+        /// HeroData의 스프라이트 ID로 동적 로드
+        /// </summary>
+        private void LoadSprites(Data.HeroData heroData)
+        {
+            spriteRenderer = GetComponent<SpriteRenderer>();
+
+            Sprite heroSpr = Resources.Load<Sprite>($"Sprite/Hero/{heroData.heroSprite}");
+
+            if (heroSpr != null && spriteRenderer != null)
+            {
+                spriteRenderer.sprite = heroSpr;
+            }
+
+            projectileSprite = Resources.Load<Sprite>($"Sprite/Projectile/{heroData.projectileSprite}");
+        }
+
+        /// <summary>
+        /// splashRadius에 따라 공격 전략을 자동 결정
         /// </summary>
         private void SetAttackStrategy()
         {
-            attackStrategy = tribe switch
+            if (splashRadius > 0f)
             {
-                HeroTribe.Human => new SingleAttackStrategy(),
-                HeroTribe.Alien => new SplashAttackStrategy(splashRadius),
-                _ => new SingleAttackStrategy()
-            };
+                attackStrategy = new SplashAttackStrategy(splashRadius);
+            }
+            else
+            {
+                attackStrategy = new SingleAttackStrategy();
+            }
         }
         #endregion
 
         #region 유니티 Event
-        private void Start()
-        {
-            projectilePool = FindObjectOfType<ProjectilePool>();
-            Data.HeroData heroData = Managers.DataManager.GetTable<Data.HeroData>().Get(heroId);
-
-            if (heroData != null)
-            {
-                Initialize(heroData, projectilePool);
-            }
-        }
-
         private void Update()
         {
             if (attackStrategy == null || projectilePool == null) return;
@@ -137,6 +158,19 @@ namespace StarDefense.Hero
             Vector3 targetPos = currentTarget.Transform.position;
 
             attackStrategy.Execute(transform.position, targetPos, attackDamage, currentTarget, projectileSprite, projectilePool);
+        }
+        #endregion
+
+        #region 승급 표시
+        /// <summary>
+        /// 승급 가능 표시 활성/비활성
+        /// </summary>
+        public void SetUpgradeIndicator(bool active)
+        {
+            if (upgradeIndicator != null)
+            {
+                upgradeIndicator.SetActive(active);
+            }
         }
         #endregion
     }

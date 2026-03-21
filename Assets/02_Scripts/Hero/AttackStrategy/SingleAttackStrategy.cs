@@ -13,7 +13,7 @@ namespace StarDefense.Hero
             Projectile projectile = pool.Get(spawnPos);
             if (projectile != null)
             {
-                projectile.Initialize(targetPos, damage, target, projectileSprite);
+                projectile.Init(targetPos, damage, target, projectileSprite,0);
             }
         }
     }

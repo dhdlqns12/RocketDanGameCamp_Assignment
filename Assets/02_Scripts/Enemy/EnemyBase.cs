@@ -50,7 +50,7 @@ namespace StarDefense.Enemy
         #endregion
 
         #region 초기화
-        public virtual void Initialize(EnemyData mData, List<Vector3> mWaypoints)
+        public virtual void Init(EnemyData mData, List<Vector3> mWaypoints)
         {
             data = mData;
             waypoints = mWaypoints;

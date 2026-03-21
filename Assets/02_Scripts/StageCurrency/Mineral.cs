@@ -10,6 +10,7 @@ namespace StarDefense.Currency
         public int CurrentMineral => currentMineral;
 
         public event Action<int, int> OnMineralChanged;
+
         #region 초기화
         public void Init(int startMineral)
         {

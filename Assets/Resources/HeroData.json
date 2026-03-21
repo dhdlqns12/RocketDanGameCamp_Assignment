@@ -1,11 +1,122 @@
 ﻿[
 	{
 		"heroId": 2001,
-		"heroName": "Santa",
+		"heroName": "CommonSanta",
 		"rarity": "Common",
 		"tribe": "Human",
-		"attackDamage": 10,
+		"attackDamage": 60,
 		"attackSpeed": 1,
-		"attackRange": 3
+		"attackRange": 3,
+		"splashRadius": 0,
+		"heroSprite": 2001,
+		"projectileSprite": 3001
+	},
+	{
+		"heroId": 2002,
+		"heroName": "CommonSlime",
+		"rarity": "Common",
+		"tribe": "Alien",
+		"attackDamage": 45,
+		"attackSpeed": 1,
+		"attackRange": 2,
+		"splashRadius": 1,
+		"heroSprite": 2002,
+		"projectileSprite": 3002
+	},
+	{
+		"heroId": 2101,
+		"heroName": "RareSanta",
+		"rarity": "Rare",
+		"tribe": "Human",
+		"attackDamage": 100,
+		"attackSpeed": 1,
+		"attackRange": 3,
+		"splashRadius": 0,
+		"heroSprite": 2101,
+		"projectileSprite": 3101
+	},
+	{
+		"heroId": 2102,
+		"heroName": "RareSlime",
+		"rarity": "Rare",
+		"tribe": "Alien",
+		"attackDamage": 70,
+		"attackSpeed": 1,
+		"attackRange": 2,
+		"splashRadius": 1.2,
+		"heroSprite": 2102,
+		"projectileSprite": 3102
+	},
+	{
+		"heroId": 2201,
+		"heroName": "EpicSanta",
+		"rarity": "Epic",
+		"tribe": "Human",
+		"attackDamage": 150,
+		"attackSpeed": 1,
+		"attackRange": 4,
+		"splashRadius": 0,
+		"heroSprite": 2201,
+		"projectileSprite": 3201
+	},
+	{
+		"heroId": 2202,
+		"heroName": "EpicSlime",
+		"rarity": "Epic",
+		"tribe": "Alien",
+		"attackDamage": 110,
+		"attackSpeed": 1,
+		"attackRange": 2,
+		"splashRadius": 1.5,
+		"heroSprite": 2202,
+		"projectileSprite": 3202
+	},
+	{
+		"heroId": 2301,
+		"heroName": "UniqueSanta",
+		"rarity": "Unique",
+		"tribe": "Human",
+		"attackDamage": 190,
+		"attackSpeed": 1,
+		"attackRange": 5,
+		"splashRadius": 0,
+		"heroSprite": 2301,
+		"projectileSprite": 3301
+	},
+	{
+		"heroId": 2302,
+		"heroName": "UniqueSlime",
+		"rarity": "Unique",
+		"tribe": "Alien",
+		"attackDamage": 160,
+		"attackSpeed": 1,
+		"attackRange": 3,
+		"splashRadius": 1.8,
+		"heroSprite": 2302,
+		"projectileSprite": 3302
+	},
+	{
+		"heroId": 2401,
+		"heroName": "LegendSanta",
+		"rarity": "Legend",
+		"tribe": "Human",
+		"attackDamage": 300,
+		"attackSpeed": 1.5,
+		"attackRange": 6,
+		"splashRadius": 0,
+		"heroSprite": 2401,
+		"projectileSprite": 3401
+	},
+	{
+		"heroId": 2402,
+		"heroName": "LegendSlime",
+		"rarity": "Legend",
+		"tribe": "Alien",
+		"attackDamage": 250,
+		"attackSpeed": 1.2,
+		"attackRange": 3,
+		"splashRadius": 2,
+		"heroSprite": 2402,
+		"projectileSprite": 3402
 	}
 ]

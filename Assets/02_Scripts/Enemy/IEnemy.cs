@@ -13,6 +13,6 @@ namespace StarDefense.Enemy
         public Transform Transform { get; }
 
         public void TakeDamage(int damage);
-        public void Initialize(Data.EnemyData data, System.Collections.Generic.List<Vector3> waypoints);
+        public void Init(Data.EnemyData data, System.Collections.Generic.List<Vector3> waypoints);
     }
 }

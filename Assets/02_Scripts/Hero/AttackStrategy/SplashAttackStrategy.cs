@@ -9,6 +9,7 @@ namespace StarDefense.Hero
     public class SplashAttackStrategy : IAttackStrategy
     {
         private float splashRadius;
+
         public SplashAttackStrategy(float mSplashRadius)
         {
             splashRadius = mSplashRadius;
@@ -19,7 +20,7 @@ namespace StarDefense.Hero
             Projectile proj = pool.Get(spawnPos);
             if (proj != null)
             {
-                proj.Initialize(targetPos, damage, target, projectileSprite, splashRadius);
+                proj.Init(targetPos, damage, target, projectileSprite, splashRadius);
             }
         }
     }

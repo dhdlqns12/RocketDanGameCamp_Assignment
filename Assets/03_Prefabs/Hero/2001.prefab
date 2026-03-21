@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8018225970500760655}
   - component: {fileID: 1980447559526989976}
-  - component: {fileID: 6759771732297432937}
+  - component: {fileID: 8824250391709368417}
   m_Layer: 0
   m_Name: 2001
   m_TagString: Untagged
@@ -73,8 +73,8 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 31
-  m_Sprite: {fileID: -933771087, guid: 960bdaa0c6d322349a2dcbb274d13e60, type: 3}
+  m_SortingOrder: 41
+  m_Sprite: {fileID: -933771087, guid: 4420e97a9b3300a499ee8529ed793b9d, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -85,7 +85,7 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &6759771732297432937
+--- !u!114 &8824250391709368417
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -98,10 +98,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spriteRenderer: {fileID: 1980447559526989976}
-  rarity: 0
   tribe: 0
-  attackRange: 4
-  attackSpeed: 1
-  attackDamage: 10
   projectileSprite: {fileID: 21300000, guid: ef7b88b70d142124c94dd3c6eff3bb93, type: 3}
-  splashRadius: 0
+  enemyLayer:
+    serializedVersion: 2
+    m_Bits: 64
