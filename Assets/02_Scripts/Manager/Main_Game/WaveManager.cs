@@ -155,7 +155,8 @@ namespace StarDefense.Managers
 
             foreach (WavePhase phase in waveData.phases)
             {
-                if (registeredIds.Contains(phase.enemyId)) continue;
+                if (registeredIds.Contains(phase.enemyId)) 
+                    continue;
 
                 GameObject prefab = Resources.Load<GameObject>($"Enemy/{phase.enemyId}");
 

@@ -25,10 +25,12 @@ namespace StarDefense.Hero
             target = mTarget;
             splashRadius = mSplashRadius;
             isActive = true;
+
             if (spriteRenderer != null && mSprite != null)
             {
                 spriteRenderer.sprite = mSprite;
             }
+
             Vector3 dir = (targetPosition - transform.position).normalized;
             float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
             transform.rotation = Quaternion.Euler(0f, 0f, angle);
@@ -43,7 +45,9 @@ namespace StarDefense.Hero
         #region 유니티 Event
         private void Update()
         {
-            if (!isActive) return;
+            if (!isActive) 
+                return;
+
             Move();
         }
         #endregion
@@ -84,10 +88,14 @@ namespace StarDefense.Hero
         private void ApplySplashDamage()
         {
             EnemyBase[] enemies = FindObjectsByType<EnemyBase>(FindObjectsSortMode.None);
+
             foreach (EnemyBase enemy in enemies)
             {
-                if (!enemy.IsAlive) continue;
+                if (!enemy.IsAlive) 
+                    continue;
+
                 float dist = Vector3.Distance(targetPosition, enemy.Transform.position);
+
                 if (dist <= splashRadius)
                 {
                     enemy.TakeDamage(damage);

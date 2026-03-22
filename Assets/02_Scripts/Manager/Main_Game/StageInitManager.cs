@@ -4,6 +4,7 @@ using StarDefense.Currency;
 using StarDefense.Enemy;
 using StarDefense.Hero;
 using StarDefense.Map;
+using StarDefense.UI;
 
 namespace StarDefense.Managers
 {
@@ -20,6 +21,12 @@ namespace StarDefense.Managers
         [SerializeField] private HeroSummonManager summonManager;
         [SerializeField] private HeroUpgradeManager upgradeManager;
         [SerializeField] private TileInputHandler tileInputHandler;
+        [SerializeField] private StatUpgradeManager statUpgradeManager;
+        [SerializeField] private HeroRegistryManager heroRegistryManager;
+        [SerializeField] private UpgradeStatUI upgradeStatUI;
+        [SerializeField] private BountyManager bountyManager;
+        [SerializeField] private BountyUI bountyUI;
+        [SerializeField] private EnemyPool enemyPool;
 
         [Header("지휘관")]
         [SerializeField] private GameObject commanderPrefab;
@@ -31,6 +38,7 @@ namespace StarDefense.Managers
         public Gold Gold => gold;
         public Mineral Mineral => mineral;
         public Commander Commander => commander;
+
         #region 유니티 Event
         private void Start()
         {
@@ -75,15 +83,25 @@ namespace StarDefense.Managers
             EnemyBase.OnEnemyReachedEnd += OnEnemyReachedEnd;
 
             // 승급 매니저 초기화
-            upgradeManager.Init(summonManager, projectilePool, mapManager);
+            upgradeManager.Init(summonManager, projectilePool, mapManager, heroRegistryManager);
 
             // 소환 매니저 초기화
             summonManager.Init(projectilePool, mapManager, upgradeManager);
 
-            // 타일 입력 초기화 
+            // 강화 매니저 초기화
+            statUpgradeManager.Init(gold, summonManager, heroRegistryManager);
+
+            // 강화 UI 초기화
+            upgradeStatUI.Init(statUpgradeManager, gold);
+
+            // 타일 입력 초기화
             tileInputHandler.Init(gold);
 
-            // 웨이브 
+            // 현상금 초기화
+            bountyManager.Init(mapManager, enemyPool);
+            bountyUI.Init(bountyManager);
+
+            // 웨이브 (맵 경로 데이터 필요)
             waveManager.Init(stageId);
 
             // 웨이브 시작
@@ -135,8 +153,6 @@ namespace StarDefense.Managers
         /// </summary>
         private void OnGameOver()
         {
-            Debug.Log("Game Over!");
-
             // TODO: 게임 오버 UI 표시
             Time.timeScale = 0f;
         }

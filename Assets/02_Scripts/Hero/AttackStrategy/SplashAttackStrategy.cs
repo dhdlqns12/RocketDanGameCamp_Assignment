@@ -18,6 +18,7 @@ namespace StarDefense.Hero
         public void Execute(Vector3 spawnPos, Vector3 targetPos, int damage, EnemyBase target, Sprite projectileSprite, ProjectilePool pool)
         {
             Projectile proj = pool.Get(spawnPos);
+
             if (proj != null)
             {
                 proj.Init(targetPos, damage, target, projectileSprite, splashRadius);

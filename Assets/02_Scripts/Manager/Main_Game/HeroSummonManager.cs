@@ -87,6 +87,7 @@ namespace StarDefense.Managers
             if (heroData == null)
             {
                 Debug.LogError($"{rarity} 등급 데이터 없음");
+
                 return false;
             }
 
@@ -138,14 +139,15 @@ namespace StarDefense.Managers
         {
             List<HeroData> pool = heroDataByRarity[rarity];
 
-            if (pool.Count == 0) return null;
+            if (pool.Count == 0) 
+                return null;
 
             int index = Random.Range(0, pool.Count);
             return pool[index];
         }
         #endregion
 
-        #region 강화 (추후)
+        #region 강화
         /// <summary>
         /// Common 확률을 줄이고 나머지 등급 확률을 올린다
         /// </summary>

@@ -32,6 +32,7 @@ namespace StarDefense.Data
             }
 
             Debug.LogError($"데이터 테이블 키 찾을 수 없음: {key}");
+
             return default;
         }
 

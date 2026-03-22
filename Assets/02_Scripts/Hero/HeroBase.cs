@@ -5,7 +5,7 @@ using StarDefense.Enemy;
 namespace StarDefense.Hero
 {
     /// <summary>
-    /// 영웅 클래스. 데이터 드리븐 방식
+    /// 영웅 클래스
     /// HeroData에서 스탯, heroId 기반으로 스프라이트 동적 로드
     /// Hero: Resources/Sprite/Hero/{heroId}
     /// Projectile: Resources/Sprite/Projectile/{heroId + 1000}
@@ -31,6 +31,7 @@ namespace StarDefense.Hero
         private float attackRange;
         private float attackSpeed;
         private int attackDamage;
+        private int baseAttackDamage;
         private float splashRadius;
 
         private static readonly Collider2D[] hitBuffer = new Collider2D[200];
@@ -50,6 +51,27 @@ namespace StarDefense.Hero
         public bool CanTranscend => rarity == HeroRarity.Unique;
         public Transform Transform => transform;
 
+        #region 유니티 Event
+        private void Update()
+        {
+            if (attackStrategy == null || projectilePool == null)
+                return;
+
+            attackTimer -= Time.deltaTime;
+
+            if (attackTimer > 0f)
+                return;
+
+            FindTarget();
+
+            if (currentTarget != null)
+            {
+                Attack();
+                attackTimer = 1f / attackSpeed;
+            }
+        }
+        #endregion
+
         #region 초기화
         /// <summary>
         /// HeroData에서 스탯 + heroId 기반 스프라이트 초기화
@@ -60,6 +82,7 @@ namespace StarDefense.Hero
             rarity = System.Enum.Parse<HeroRarity>(heroData.rarity);
             tribe = System.Enum.Parse<HeroTribe>(heroData.tribe);
             attackDamage = heroData.attackDamage;
+            baseAttackDamage = heroData.attackDamage;
             attackSpeed = heroData.attackSpeed;
             attackRange = heroData.attackRange;
             splashRadius = heroData.splashRadius;
@@ -109,24 +132,13 @@ namespace StarDefense.Hero
         {
             attackSpeed *= (1f + attackSpeedBonus);
         }
-        #endregion
 
-        #region 유니티 Event
-        private void Update()
+        /// <summary>
+        /// 강화 보너스 적용. 기본 데미지 기준으로 계산
+        /// </summary>
+        public void ApplyDamageBonus(float totalBonus)
         {
-            if (attackStrategy == null || projectilePool == null) return;
-
-            attackTimer -= Time.deltaTime;
-
-            if (attackTimer > 0f) return;
-
-            FindTarget();
-
-            if (currentTarget != null)
-            {
-                Attack();
-                attackTimer = 1f / attackSpeed;
-            }
+            attackDamage = Mathf.RoundToInt(baseAttackDamage * (1f + totalBonus));
         }
         #endregion
 
@@ -139,13 +151,16 @@ namespace StarDefense.Hero
 
             for (int i = 0; i < count; i++)
             {
-                if (!hitBuffer[i].TryGetComponent(out EnemyBase enemy)) continue;
+                if (!hitBuffer[i].TryGetComponent(out EnemyBase enemy)) 
+                    continue;
 
-                if (!enemy.IsAlive) continue;
+                if (!enemy.IsAlive) 
+                    continue;
 
                 float dist = Vector3.Distance(transform.position, enemy.Transform.position);
 
-                if (dist > attackRange) continue;
+                if (dist > attackRange) 
+                    continue;
 
                 if (dist < closestDist)
                 {
@@ -162,7 +177,8 @@ namespace StarDefense.Hero
         /// </summary>
         public void Attack()
         {
-            if (currentTarget == null || projectilePool == null || attackStrategy == null) return;
+            if (currentTarget == null || projectilePool == null || attackStrategy == null) 
+                return;
 
             Vector3 targetPos = currentTarget.Transform.position;
 

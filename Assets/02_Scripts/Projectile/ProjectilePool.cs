@@ -17,6 +17,7 @@ namespace StarDefense.Hero
             poolParent = new GameObject("ProjectilePool").transform;
             poolParent.SetParent(transform);
             pool.Clear();
+
             for (int i = 0; i < poolSize; i++)
             {
                 Projectile projectile = CreateProjectile();
@@ -31,6 +32,7 @@ namespace StarDefense.Hero
         public Projectile Get(Vector3 position)
         {
             Projectile proj;
+
             if (pool.Count > 0)
             {
                 proj = pool.Dequeue();
@@ -45,6 +47,7 @@ namespace StarDefense.Hero
 
                 proj.transform.position = position;
             }
+
             return proj;
         }
 

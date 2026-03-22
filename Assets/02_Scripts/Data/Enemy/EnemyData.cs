@@ -1,5 +1,4 @@
 ﻿using System;
-
 namespace StarDefense.Data
 {
     [Serializable]
@@ -12,5 +11,7 @@ namespace StarDefense.Data
         public int damage;
         public int goldReward;
         public int mineralReward;
+        public bool isAir;
+        public bool isBounty;
     }
 }

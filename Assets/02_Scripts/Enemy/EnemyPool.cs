@@ -31,6 +31,7 @@ namespace StarDefense.Enemy
             if (!pools.ContainsKey(key))
             {
                 Debug.LogError($"[EnemyPool] Key not registered: {key}");
+
                 return null;
             }
 
@@ -40,6 +41,7 @@ namespace StarDefense.Enemy
             {
                 EnemyBase enemy = pool.Dequeue();
                 enemy.gameObject.SetActive(true);
+
                 return enemy;
             }
 
@@ -62,7 +64,8 @@ namespace StarDefense.Enemy
         /// </summary>
         public void RegisterPrefab(string key, GameObject prefab)
         {
-            if (Baseprefab.ContainsKey(key)) return;
+            if (Baseprefab.ContainsKey(key)) 
+                return;
 
             Baseprefab[key] = prefab;
             pools[key] = new Queue<EnemyBase>();
@@ -80,6 +83,7 @@ namespace StarDefense.Enemy
             GameObject obj = Instantiate(Baseprefab[key], poolParent);
             EnemyBase enemy = obj.GetComponent<EnemyBase>();
             enemy.SetPool(this, key);
+
             return enemy;
         }
         #endregion

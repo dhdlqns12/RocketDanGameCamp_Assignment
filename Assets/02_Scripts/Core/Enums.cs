@@ -33,7 +33,17 @@
         Repair,
         Upgrade,
         TranscendButton,
-        TranscendSelecte
+        TranscendSelect
+    }
+    #endregion
+
+    #region Upgrade
+    public enum UpgradeType
+    {
+        CommonRare,
+        Epic,
+        UniqueLegend,
+        SummonRate
     }
     #endregion
 }

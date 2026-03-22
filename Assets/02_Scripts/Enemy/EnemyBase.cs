@@ -61,7 +61,8 @@ namespace StarDefense.Enemy
         #region 유니티 Event
         protected virtual void Update()
         {
-            if (!isAlive || currentState == null) return;
+            if (!isAlive || currentState == null) 
+                return;
 
             currentState.OnStateUpdate(this);
         }
@@ -100,7 +101,8 @@ namespace StarDefense.Enemy
 
         public virtual void TakeDamage(int damage)
         {
-            if (!isAlive) return;
+            if (!isAlive) 
+                return;
 
             currentHp -= damage;
 
@@ -109,6 +111,7 @@ namespace StarDefense.Enemy
                 currentHp = 0;
                 isAlive = false;
                 ChangeState(dieState);
+
                 return;
             }
 
@@ -120,7 +123,8 @@ namespace StarDefense.Enemy
         /// </summary>
         private void HitFlash()
         {
-            if (spriteRenderer == null) return;
+            if (spriteRenderer == null) 
+                return;
 
             if (mpb == null) mpb = new MaterialPropertyBlock();
 
@@ -167,7 +171,8 @@ namespace StarDefense.Enemy
         #region 애니메이션
         public void UpdateAnimation(Vector3 direction)
         {
-            if (animator == null) return;
+            if (animator == null) 
+                return;
 
             animator.SetFloat(DIRX, direction.x);
             animator.SetFloat(DIRY, direction.y);

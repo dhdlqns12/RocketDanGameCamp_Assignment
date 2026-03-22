@@ -68,11 +68,13 @@ namespace StarDefense.Hero
         #region 유니티 Event
         private void Update()
         {
-            if (projectilePool == null || attackStrategy == null || !IsAlive) return;
+            if (projectilePool == null || attackStrategy == null || !IsAlive) 
+                return;
 
             attackTimer -= Time.deltaTime;
 
-            if (attackTimer > 0f) return;
+            if (attackTimer > 0f) 
+                return;
 
             FindTarget();
 
@@ -94,13 +96,16 @@ namespace StarDefense.Hero
 
             for (int i = 0; i < count; i++)
             {
-                if (!hitBuffer[i].TryGetComponent(out EnemyBase enemy)) continue;
+                if (!hitBuffer[i].TryGetComponent(out EnemyBase enemy)) 
+                    continue;
 
-                if (!enemy.IsAlive) continue;
+                if (!enemy.IsAlive) 
+                    continue;
 
                 float dist = Vector3.Distance(transform.position, enemy.Transform.position);
 
-                if (dist > attackRange) continue;
+                if (dist > attackRange) 
+                    continue;
 
                 if (dist < closestDist)
                 {
@@ -114,7 +119,8 @@ namespace StarDefense.Hero
         #region 공격
         private void Attack()
         {
-            if (currentTarget == null || projectilePool == null || attackStrategy == null) return;
+            if (currentTarget == null || projectilePool == null || attackStrategy == null) 
+                return;
 
             Vector3 targetPos = currentTarget.Transform.position;
 
@@ -128,7 +134,8 @@ namespace StarDefense.Hero
         /// </summary>
         public void TakeDamage(int damage)
         {
-            if (currentHp <= 0) return;
+            if (currentHp <= 0) 
+                return;
 
             currentHp -= damage;
 
@@ -150,14 +157,6 @@ namespace StarDefense.Hero
             Debug.Log("지휘관 사망");
 
             OnCommanderDead?.Invoke();
-        }
-        #endregion
-
-        #region Gizmo
-        private void OnDrawGizmosSelected()
-        {
-            Gizmos.color = new Color(0f, 0f, 1f, 0.3f);
-            Gizmos.DrawWireSphere(transform.position, attackRange);
         }
         #endregion
     }

@@ -6,7 +6,9 @@
 		"moveSpeed": 2,
 		"damage": 100,
 		"goldReward": 100,
-		"mineralReward": 0
+		"mineralReward": 0,
+		"isAir": false,
+		"isBounty": false
 	},
 	{
 		"enemyId": 1002,
@@ -15,7 +17,9 @@
 		"moveSpeed": 1.5,
 		"damage": 150,
 		"goldReward": 1,
-		"mineralReward": 0
+		"mineralReward": 0,
+		"isAir": false,
+		"isBounty": false
 	},
 	{
 		"enemyId": 1003,
@@ -24,6 +28,30 @@
 		"moveSpeed": 1.5,
 		"damage": 200,
 		"goldReward": 1,
-		"mineralReward": 0
+		"mineralReward": 0,
+		"isAir": false,
+		"isBounty": false
+	},
+	{
+		"enemyId": 9001,
+		"enemyName": "GoldBounty",
+		"hp": 1000,
+		"moveSpeed": 1.8,
+		"damage": 0,
+		"goldReward": 50,
+		"mineralReward": 0,
+		"isAir": false,
+		"isBounty": true
+	},
+	{
+		"enemyId": 9002,
+		"enemyName": "MineralBounty",
+		"hp": 2000,
+		"moveSpeed": 1.8,
+		"damage": 0,
+		"goldReward": 0,
+		"mineralReward": 30,
+		"isAir": false,
+		"isBounty": true
 	}
 ]

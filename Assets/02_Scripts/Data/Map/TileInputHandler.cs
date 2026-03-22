@@ -6,6 +6,7 @@ using StarDefense.Hero;
 using StarDefense.Currency;
 using StarDefense.Managers;
 using StarDefense.UI;
+using StarDefense.Core;
 
 namespace StarDefense.Map
 {
@@ -36,26 +37,8 @@ namespace StarDefense.Map
         private bool hasRepairSelected;
         private bool isReady;
 
-        private enum ActiveUI { None, Summon, Repair, Upgrade, TranscendButton, TranscendSelect }
         private ActiveUI activeUI;
         private int activeCost;
-
-        #region 초기화
-        public void Init(Gold mGold)
-        {
-            gold = mGold;
-            gold.OnGoldChanged += OnGoldChanged;
-            isReady = true;
-        }
-
-        private void OnDestroy()
-        {
-            if (gold != null)
-            {
-                gold.OnGoldChanged -= OnGoldChanged;
-            }
-        }
-        #endregion
 
         #region 유니티 Event
         private void Awake()
@@ -73,18 +56,22 @@ namespace StarDefense.Map
 
             HandleClick();
         }
+        #endregion
 
-        private bool IsPointerOverUI()
+        #region 초기화
+        public void Init(Gold mGold)
         {
-            if (EventSystem.current == null) return false;
+            gold = mGold;
+            gold.OnGoldChanged += OnGoldChanged;
+            isReady = true;
+        }
 
-            PointerEventData eventData = new PointerEventData(EventSystem.current);
-            eventData.position = Input.mousePosition;
-
-            List<RaycastResult> results = new List<RaycastResult>();
-            EventSystem.current.RaycastAll(eventData, results);
-
-            return results.Count > 0;
+        private void OnDestroy()
+        {
+            if (gold != null)
+            {
+                gold.OnGoldChanged -= OnGoldChanged;
+            }
         }
         #endregion
 
@@ -209,6 +196,19 @@ namespace StarDefense.Map
 
             return null;
         }
+
+        private bool IsPointerOverUI()
+        {
+            if (EventSystem.current == null) return false;
+
+            PointerEventData eventData = new PointerEventData(EventSystem.current);
+            eventData.position = Input.mousePosition;
+
+            List<RaycastResult> results = new List<RaycastResult>();
+            EventSystem.current.RaycastAll(eventData, results);
+
+            return results.Count > 0;
+        }
         #endregion
 
         #region 소환/승급/수리/초월
@@ -255,9 +255,6 @@ namespace StarDefense.Map
             activeUI = ActiveUI.None;
         }
 
-        /// <summary>
-        /// 초월 버튼 클릭 → 골드 차감 → 선택지 패널 오픈
-        /// </summary>
         public void OnTranscendButtonClicked()
         {
             if (selectedHero == null) return;
@@ -274,9 +271,6 @@ namespace StarDefense.Map
             activeUI = ActiveUI.TranscendSelect;
         }
 
-        /// <summary>
-        /// 선택지에서 유닛 선택 → TryTranscend
-        /// </summary>
         public void OnTranscendConfirmed(HeroData selectedLegend)
         {
             if (selectedHero == null) return;

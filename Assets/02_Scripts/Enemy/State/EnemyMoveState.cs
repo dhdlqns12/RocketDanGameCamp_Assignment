@@ -12,6 +12,7 @@ namespace StarDefense.Enemy.State
             if (enemy.WaypointIndex >= enemy.Waypoints.Count)
             {
                 enemy.ChangeState(enemy.ReachEndState);
+
                 return;
             }
 
