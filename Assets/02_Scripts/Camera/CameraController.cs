@@ -6,7 +6,7 @@ namespace StarDefense.Managers
     public class CameraController : MonoBehaviour
     {
         [Header("Background Reference")]
-        [Tooltip("배경 SpriteRenderer. 이 스프라이트 크기에 맞춰 카메라 설정")]
+        [Tooltip("배경 SpriteRenderer")]
         [SerializeField] private SpriteRenderer background;
 
         [Header("Padding")]

@@ -1,5 +1,7 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.EventSystems;
+using StarDefense.Data;
 using StarDefense.Hero;
 using StarDefense.Currency;
 using StarDefense.Managers;
@@ -9,6 +11,7 @@ namespace StarDefense.Map
 {
     /// <summary>
     /// 타일 터치 감지
+    ///MapManager 오브젝트에 같이 붙여서 사용
     /// </summary>
     [RequireComponent(typeof(MapManager))]
     public class TileInputHandler : MonoBehaviour
@@ -18,9 +21,12 @@ namespace StarDefense.Map
         [SerializeField] private SummonUI summonUI;
         [SerializeField] private UpgradeUI upgradeUI;
         [SerializeField] private RepairUI repairUI;
+        [SerializeField] private TranscendButtonUI transcendButtonUI;
+        [SerializeField] private TranscendSelectUI transcendSelectUI;
 
-        [Header("수리 비용")]
+        [Header("비용")]
         [SerializeField] private int repairCost = 30;
+        [SerializeField] private int transcendCost = 100;
 
         private MapManager mapManager;
         private Gold gold;
@@ -28,11 +34,26 @@ namespace StarDefense.Map
         private HeroBase selectedHero;
         private bool hasTileSelected;
         private bool hasRepairSelected;
+        private bool isReady;
+
+        private enum ActiveUI { None, Summon, Repair, Upgrade, TranscendButton, TranscendSelect }
+        private ActiveUI activeUI;
+        private int activeCost;
 
         #region 초기화
         public void Init(Gold mGold)
         {
             gold = mGold;
+            gold.OnGoldChanged += OnGoldChanged;
+            isReady = true;
+        }
+
+        private void OnDestroy()
+        {
+            if (gold != null)
+            {
+                gold.OnGoldChanged -= OnGoldChanged;
+            }
         }
         #endregion
 
@@ -44,11 +65,26 @@ namespace StarDefense.Map
 
         private void Update()
         {
+            if (!isReady) return;
+
             if (!Input.GetMouseButtonDown(0)) return;
 
-            if (EventSystem.current != null && EventSystem.current.IsPointerOverGameObject()) return;
+            if (IsPointerOverUI()) return;
 
             HandleClick();
+        }
+
+        private bool IsPointerOverUI()
+        {
+            if (EventSystem.current == null) return false;
+
+            PointerEventData eventData = new PointerEventData(EventSystem.current);
+            eventData.position = Input.mousePosition;
+
+            List<RaycastResult> results = new List<RaycastResult>();
+            EventSystem.current.RaycastAll(eventData, results);
+
+            return results.Count > 0;
         }
         #endregion
 
@@ -62,17 +98,35 @@ namespace StarDefense.Map
 
             HideAllUI();
 
+            // 영웅이 있는 타일 클릭
             HeroBase hero = FindHeroAtGrid(gridPos);
 
-            if (hero != null && upgradeManager.CanUpgrade(hero))
+            if (hero != null)
             {
-                selectedHero = hero;
-                hasTileSelected = false;
-                hasRepairSelected = false;
+                if (upgradeManager.CanTranscend(hero))
+                {
+                    selectedHero = hero;
+                    hasTileSelected = false;
+                    hasRepairSelected = false;
 
-                Vector3 tileWorldPos = mapManager.GridToWorldPosition(gridPos.x, gridPos.y);
-                upgradeUI.Show(tileWorldPos);
-                return;
+                    Vector3 tileWorldPos = mapManager.GridToWorldPosition(gridPos.x, gridPos.y);
+                    transcendButtonUI.Show(tileWorldPos, transcendCost, gold.CurrentGold);
+                    activeUI = ActiveUI.TranscendButton;
+                    activeCost = transcendCost;
+                    return;
+                }
+
+                if (upgradeManager.CanUpgrade(hero))
+                {
+                    selectedHero = hero;
+                    hasTileSelected = false;
+                    hasRepairSelected = false;
+
+                    Vector3 tileWorldPos = mapManager.GridToWorldPosition(gridPos.x, gridPos.y);
+                    upgradeUI.Show(tileWorldPos);
+                    activeUI = ActiveUI.Upgrade;
+                    return;
+                }
             }
 
             int tileType = mapManager.GetTileType(gridPos.x, gridPos.y);
@@ -85,7 +139,9 @@ namespace StarDefense.Map
                 selectedHero = null;
 
                 Vector3 tileWorldPos = mapManager.GridToWorldPosition(gridPos.x, gridPos.y);
-                repairUI.Show(tileWorldPos, repairCost);
+                repairUI.Show(tileWorldPos, repairCost, gold.CurrentGold);
+                activeUI = ActiveUI.Repair;
+                activeCost = repairCost;
                 return;
             }
 
@@ -97,10 +153,13 @@ namespace StarDefense.Map
                 selectedHero = null;
 
                 Vector3 tileWorldPos = mapManager.GridToWorldPosition(gridPos.x, gridPos.y);
-                summonUI.Show(tileWorldPos, summonManager.SummonCost);
+                summonUI.Show(tileWorldPos, summonManager.SummonCost, gold.CurrentGold);
+                activeUI = ActiveUI.Summon;
+                activeCost = summonManager.SummonCost;
                 return;
             }
 
+            // 그 외
             hasTileSelected = false;
             hasRepairSelected = false;
             selectedHero = null;
@@ -111,11 +170,28 @@ namespace StarDefense.Map
             summonUI.Hide();
             upgradeUI.Hide();
             repairUI.Hide();
+            transcendButtonUI.Hide();
+            transcendSelectUI.Hide();
+            activeUI = ActiveUI.None;
+            activeCost = 0;
         }
 
-        /// <summary>
-        /// 그리드 위치에 있는 영웅 찾기
-        /// </summary>
+        private void OnGoldChanged(int currentGold, int delta)
+        {
+            switch (activeUI)
+            {
+                case ActiveUI.Summon:
+                    summonUI.UpdatePriceColor(currentGold, activeCost);
+                    break;
+                case ActiveUI.Repair:
+                    repairUI.UpdatePriceColor(currentGold, activeCost);
+                    break;
+                case ActiveUI.TranscendButton:
+                    transcendButtonUI.UpdatePriceColor(currentGold, activeCost);
+                    break;
+            }
+        }
+
         private HeroBase FindHeroAtGrid(Vector2Int gridPos)
         {
             Vector3 worldPos = mapManager.GridToWorldPosition(gridPos.x, gridPos.y);
@@ -135,7 +211,7 @@ namespace StarDefense.Map
         }
         #endregion
 
-        #region 소환/승급/수리 확인
+        #region 소환/승급/수리/초월
         public void OnSummonConfirmed()
         {
             if (!hasTileSelected) return;
@@ -149,6 +225,7 @@ namespace StarDefense.Map
 
             summonUI.Hide();
             hasTileSelected = false;
+            activeUI = ActiveUI.None;
         }
 
         public void OnUpgradeConfirmed()
@@ -159,6 +236,7 @@ namespace StarDefense.Map
 
             upgradeUI.Hide();
             selectedHero = null;
+            activeUI = ActiveUI.None;
         }
 
         public void OnRepairConfirmed()
@@ -174,6 +252,40 @@ namespace StarDefense.Map
 
             repairUI.Hide();
             hasRepairSelected = false;
+            activeUI = ActiveUI.None;
+        }
+
+        /// <summary>
+        /// 초월 버튼 클릭 → 골드 차감 → 선택지 패널 오픈
+        /// </summary>
+        public void OnTranscendButtonClicked()
+        {
+            if (selectedHero == null) return;
+
+            if (!gold.SpendGold(transcendCost))
+            {
+                return;
+            }
+
+            transcendButtonUI.Hide();
+
+            HeroData[] options = upgradeManager.GetTranscendOptions(selectedHero);
+            transcendSelectUI.Show(options);
+            activeUI = ActiveUI.TranscendSelect;
+        }
+
+        /// <summary>
+        /// 선택지에서 유닛 선택 → TryTranscend
+        /// </summary>
+        public void OnTranscendConfirmed(HeroData selectedLegend)
+        {
+            if (selectedHero == null) return;
+
+            upgradeManager.TryTranscend(selectedHero, selectedLegend);
+
+            transcendSelectUI.Hide();
+            selectedHero = null;
+            activeUI = ActiveUI.None;
         }
         #endregion
     }

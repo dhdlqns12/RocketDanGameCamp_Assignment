@@ -1,5 +1,4 @@
 ﻿using System;
-using StarDefense.Core;
 namespace StarDefense.Data
 {
     /// <summary>
@@ -16,7 +15,8 @@ namespace StarDefense.Data
         public float attackSpeed;
         public float attackRange;
         public float splashRadius;
-        public string heroSprite;
-        public string projectileSprite;
+        public int heroSprite;
+        public int projectileSprite;
+        public int[] transcendOptions;
     }
 }

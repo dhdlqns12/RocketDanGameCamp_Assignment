@@ -2,19 +2,20 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+
 namespace StarDefense.UI
 {
     /// <summary>
-    /// 수리 UI
+    /// 초월 비용 버튼
     /// </summary>
-    public class RepairUI : MonoBehaviour
+    public class TranscendButtonUI : MonoBehaviour
     {
-        [SerializeField] private Button repairButton;
+        [SerializeField] private Button transcendButton;
         [SerializeField] private TextMeshProUGUI priceText;
         [SerializeField] private TileInputHandler tileInputHandler;
 
         [Header("위치 오프셋")]
-        [SerializeField] private Vector2 offset = new Vector2(0f, -50f);
+        [SerializeField] private Vector2 offset = new Vector2(0f, 15f);
 
         private RectTransform buttonRect;
         private Camera mainCamera;
@@ -22,10 +23,10 @@ namespace StarDefense.UI
         #region 유니티 Event
         private void Awake()
         {
-            buttonRect = repairButton.GetComponent<RectTransform>();
+            buttonRect = transcendButton.GetComponent<RectTransform>();
             mainCamera = Camera.main;
 
-            repairButton.onClick.AddListener(OnRepairButtonClicked);
+            transcendButton.onClick.AddListener(OnTranscendButtonClicked);
             Hide();
         }
         #endregion
@@ -33,7 +34,7 @@ namespace StarDefense.UI
         #region UI 표시/숨김
         public void Show(Vector3 tileWorldPos, int cost, int currentGold)
         {
-            repairButton.gameObject.SetActive(true);
+            transcendButton.gameObject.SetActive(true);
 
             priceText.text = $"{cost}G";
             priceText.color = currentGold >= cost ? Color.white : Color.red;
@@ -44,7 +45,7 @@ namespace StarDefense.UI
 
         public void Hide()
         {
-            repairButton.gameObject.SetActive(false);
+            transcendButton.gameObject.SetActive(false);
         }
 
         public void UpdatePriceColor(int currentGold, int cost)
@@ -54,9 +55,9 @@ namespace StarDefense.UI
         #endregion
 
         #region 버튼 이벤트
-        private void OnRepairButtonClicked()
+        private void OnTranscendButtonClicked()
         {
-            tileInputHandler.OnRepairConfirmed();
+            tileInputHandler.OnTranscendButtonClicked();
         }
         #endregion
     }

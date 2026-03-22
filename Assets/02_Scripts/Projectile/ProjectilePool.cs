@@ -5,7 +5,7 @@ namespace StarDefense.Hero
 {
     public class ProjectilePool : MonoBehaviour
     {
-        [SerializeField] private GameObject projectilePrefab;
+        [SerializeField] private GameObject projectileBasePrefab;
         [SerializeField] private int poolSize = 200;
 
         private Queue<Projectile> pool = new Queue<Projectile>();
@@ -58,7 +58,7 @@ namespace StarDefense.Hero
         #region 생성
         private Projectile CreateProjectile()
         {
-            GameObject obj = Instantiate(projectilePrefab, poolParent);
+            GameObject obj = Instantiate(projectileBasePrefab, poolParent);
             Projectile proj = obj.GetComponent<Projectile>();
 
             proj.SetPool(this);

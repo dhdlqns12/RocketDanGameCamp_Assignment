@@ -9,7 +9,6 @@ namespace StarDefense.Hero
     /// HeroData에서 스탯, heroId 기반으로 스프라이트 동적 로드
     /// Hero: Resources/Sprite/Hero/{heroId}
     /// Projectile: Resources/Sprite/Projectile/{heroId + 1000}
-    /// 추후 상태전환 늘어나면 FSM으로 변경 고려
     /// </summary>
     public class HeroBase : MonoBehaviour, IHero
     {
@@ -18,6 +17,9 @@ namespace StarDefense.Hero
 
         [Header("승급 표시")]
         [SerializeField] private GameObject upgradeIndicator;
+
+        [Header("초월 표시")]
+        [SerializeField] private GameObject transcendIndicator;
 
         private SpriteRenderer spriteRenderer;
         private HeroTribe tribe;
@@ -45,6 +47,7 @@ namespace StarDefense.Hero
         public float AttackRange => attackRange;
         public float AttackSpeed => attackSpeed;
         public bool CanUpgrade => rarity < HeroRarity.Legend;
+        public bool CanTranscend => rarity == HeroRarity.Unique;
         public Transform Transform => transform;
 
         #region 초기화
@@ -167,7 +170,7 @@ namespace StarDefense.Hero
         }
         #endregion
 
-        #region 승급 표시
+        #region 승급/초월 표시
         /// <summary>
         /// 승급 가능 표시 활성/비활성
         /// </summary>
@@ -176,6 +179,17 @@ namespace StarDefense.Hero
             if (upgradeIndicator != null)
             {
                 upgradeIndicator.SetActive(active);
+            }
+        }
+
+        /// <summary>
+        /// 초월 가능 표시 활성/비활성 (주황색 체크)
+        /// </summary>
+        public void SetTranscendIndicator(bool active)
+        {
+            if (transcendIndicator != null)
+            {
+                transcendIndicator.SetActive(active);
             }
         }
         #endregion

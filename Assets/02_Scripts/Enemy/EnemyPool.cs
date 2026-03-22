@@ -11,7 +11,7 @@ namespace StarDefense.Enemy
         [SerializeField] private int initialPoolSize = 10;
 
         private Dictionary<string, Queue<EnemyBase>> pools = new Dictionary<string, Queue<EnemyBase>>();
-        private Dictionary<string, GameObject> prefabMap = new Dictionary<string, GameObject>();
+        private Dictionary<string, GameObject> Baseprefab = new Dictionary<string, GameObject>();
         private Transform poolParent;
 
         #region 유니티 Event
@@ -62,9 +62,9 @@ namespace StarDefense.Enemy
         /// </summary>
         public void RegisterPrefab(string key, GameObject prefab)
         {
-            if (prefabMap.ContainsKey(key)) return;
+            if (Baseprefab.ContainsKey(key)) return;
 
-            prefabMap[key] = prefab;
+            Baseprefab[key] = prefab;
             pools[key] = new Queue<EnemyBase>();
 
             for (int i = 0; i < initialPoolSize; i++)
@@ -77,7 +77,7 @@ namespace StarDefense.Enemy
 
         private EnemyBase CreateEnemy(string key)
         {
-            GameObject obj = Instantiate(prefabMap[key], poolParent);
+            GameObject obj = Instantiate(Baseprefab[key], poolParent);
             EnemyBase enemy = obj.GetComponent<EnemyBase>();
             enemy.SetPool(this, key);
             return enemy;

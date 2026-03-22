@@ -5,7 +5,7 @@
 		"hp": 200,
 		"moveSpeed": 2,
 		"damage": 100,
-		"goldReward": 1,
+		"goldReward": 100,
 		"mineralReward": 0
 	},
 	{

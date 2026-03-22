@@ -9,7 +9,8 @@
 		"attackRange": 3,
 		"splashRadius": 0,
 		"heroSprite": 2001,
-		"projectileSprite": 3001
+		"projectileSprite": 3001,
+		"transcendOptions": null
 	},
 	{
 		"heroId": 2002,
@@ -21,7 +22,8 @@
 		"attackRange": 2,
 		"splashRadius": 1,
 		"heroSprite": 2002,
-		"projectileSprite": 3002
+		"projectileSprite": 3002,
+		"transcendOptions": null
 	},
 	{
 		"heroId": 2101,
@@ -33,7 +35,8 @@
 		"attackRange": 3,
 		"splashRadius": 0,
 		"heroSprite": 2101,
-		"projectileSprite": 3101
+		"projectileSprite": 3101,
+		"transcendOptions": null
 	},
 	{
 		"heroId": 2102,
@@ -45,7 +48,8 @@
 		"attackRange": 2,
 		"splashRadius": 1.2,
 		"heroSprite": 2102,
-		"projectileSprite": 3102
+		"projectileSprite": 3102,
+		"transcendOptions": null
 	},
 	{
 		"heroId": 2201,
@@ -57,7 +61,8 @@
 		"attackRange": 4,
 		"splashRadius": 0,
 		"heroSprite": 2201,
-		"projectileSprite": 3201
+		"projectileSprite": 3201,
+		"transcendOptions": null
 	},
 	{
 		"heroId": 2202,
@@ -69,7 +74,8 @@
 		"attackRange": 2,
 		"splashRadius": 1.5,
 		"heroSprite": 2202,
-		"projectileSprite": 3202
+		"projectileSprite": 3202,
+		"transcendOptions": null
 	},
 	{
 		"heroId": 2301,
@@ -81,7 +87,11 @@
 		"attackRange": 5,
 		"splashRadius": 0,
 		"heroSprite": 2301,
-		"projectileSprite": 3301
+		"projectileSprite": 3301,
+		"transcendOptions": [
+			2401,
+			2402
+		]
 	},
 	{
 		"heroId": 2302,
@@ -93,7 +103,11 @@
 		"attackRange": 3,
 		"splashRadius": 1.8,
 		"heroSprite": 2302,
-		"projectileSprite": 3302
+		"projectileSprite": 3302,
+		"transcendOptions": [
+			2401,
+			2402
+		]
 	},
 	{
 		"heroId": 2401,
@@ -105,7 +119,8 @@
 		"attackRange": 6,
 		"splashRadius": 0,
 		"heroSprite": 2401,
-		"projectileSprite": 3401
+		"projectileSprite": 3401,
+		"transcendOptions": null
 	},
 	{
 		"heroId": 2402,
@@ -117,6 +132,7 @@
 		"attackRange": 3,
 		"splashRadius": 2,
 		"heroSprite": 2402,
-		"projectileSprite": 3402
+		"projectileSprite": 3402,
+		"transcendOptions": null
 	}
 ]

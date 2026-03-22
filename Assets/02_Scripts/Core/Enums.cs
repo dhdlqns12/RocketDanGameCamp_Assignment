@@ -24,4 +24,16 @@
         Splash
     }
     #endregion
+
+    #region UI
+    public enum ActiveUI 
+    { 
+        None,
+        Summon,
+        Repair,
+        Upgrade,
+        TranscendButton,
+        TranscendSelecte
+    }
+    #endregion
 }
