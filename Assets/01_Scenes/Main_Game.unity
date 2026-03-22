@@ -952,7 +952,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 26fd8a54982cb694488c8981da73f524, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  projectileBasePrefab: {fileID: 0}
+  projectileBasePrefab: {fileID: 7829163063229515247, guid: 42fd6d563aaf69244b486d468e69b0e5, type: 3}
   poolSize: 200
 --- !u!1 &1595208905
 GameObject:
@@ -2123,6 +2123,17 @@ RectTransform:
   m_CorrespondingSourceObject: {fileID: 8560610979000495818, guid: 7f38313f06ed45445a43f09b98ffa503, type: 3}
   m_PrefabInstance: {fileID: 6434444496218662999}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &994993460393963041 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8204501976246281088, guid: 7f38313f06ed45445a43f09b98ffa503, type: 3}
+  m_PrefabInstance: {fileID: 6434444496218662999}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59ee728352621df46af59b41ee1d61bf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!224 &994993461002977327 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 8099764836808832277, guid: 475c965cd14e6e646be82b5a27dbbef6, type: 3}
@@ -2277,6 +2288,14 @@ PrefabInstance:
       propertyPath: upgradeManager
       value: 
       objectReference: {fileID: 159594689}
+    - target: {fileID: 7038950276843015798, guid: d27c347b9dd070342aa6854b896f7dcf, type: 3}
+      propertyPath: transcendButtonUI
+      value: 
+      objectReference: {fileID: 994993460393963041}
+    - target: {fileID: 7038950276843015798, guid: d27c347b9dd070342aa6854b896f7dcf, type: 3}
+      propertyPath: transcendSelectUI
+      value: 
+      objectReference: {fileID: 1599524319}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

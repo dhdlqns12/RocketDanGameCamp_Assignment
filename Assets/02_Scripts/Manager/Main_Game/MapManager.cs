@@ -243,6 +243,34 @@ namespace StarDefense.Managers
         }
         #endregion
 
+        #region 타일 수리
+        public void RepairTile(int x, int y)
+        {
+            if (GetTileType(x, y) != 2) return;
+
+            logicGrid[x + 1, y + 1] = 1;
+
+            if (tileObjects[x, y] != null)
+            {
+                Destroy(tileObjects[x, y]);
+            }
+
+            if (currentTheme != null && currentTheme.block != null)
+            {
+                Vector3 worldPos = GridToWorldPosition(x, y);
+                GameObject tile = Instantiate(currentTheme.block, worldPos, Quaternion.identity, tileParent);
+                tile.name = $"Tile_{x}_{y}";
+
+                if (tile.TryGetComponent(out SpriteRenderer sr))
+                {
+                    sr.sortingOrder = y + 1;
+                }
+
+                tileObjects[x, y] = tile;
+            }
+        }
+        #endregion
+
         #region Public API
         public Vector3 GridToWorldPosition(int x, int y)
         {
@@ -309,26 +337,6 @@ namespace StarDefense.Managers
         }
 
         public bool IsBuffTile(int x, int y) => GetTileType(x, y) == 3;
-
-        public void RepairTile(int x, int y)
-        {
-            if (GetTileType(x, y) != 2) return;
-
-            logicGrid[x + 1, y + 1] = 1;
-
-            if (tileObjects[x, y] != null)
-            {
-                Destroy(tileObjects[x, y]);
-            }
-
-            if (currentTheme != null && currentTheme.block != null)
-            {
-                Vector3 worldPos = GridToWorldPosition(x, y);
-                GameObject tile = Instantiate(currentTheme.block, worldPos, Quaternion.identity, tileParent);
-                tile.name = $"Tile_{x}_{y}";
-                tileObjects[x, y] = tile;
-            }
-        }
         #endregion
     }
 }
