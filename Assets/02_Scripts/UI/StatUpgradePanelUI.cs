@@ -85,7 +85,7 @@ namespace StarDefense.UI
                 UpgradeType.CommonRare => "Gold",
                 UpgradeType.Epic => "Gold",
                 UpgradeType.UniqueLegend => "Gold",
-                UpgradeType.SummonRate => "Mineral",
+                UpgradeType.SummonRate => "Gold",
                 _ => "Gold"
             };
         }

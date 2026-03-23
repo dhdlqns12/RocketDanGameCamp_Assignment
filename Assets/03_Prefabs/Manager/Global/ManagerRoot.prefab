@@ -309,6 +309,8 @@ MonoBehaviour:
   - {fileID: 510656459460625064, guid: 5d87c8a32fecd0142add4562d59843bb, type: 3}
   - {fileID: 4405528295073637870, guid: 96f48cf225ea04f449f494b0d7e187a1, type: 3}
   - {fileID: 9148469298192122246, guid: dcce884624c1e7f498d3225928abc61a, type: 3}
+  - {fileID: 9010683084317929090, guid: 90f8d2602bf5f514e8bc58ac8f9e53b1, type: 3}
+  - {fileID: 6233901527394274644, guid: 74389965402cb9c4cb2a7d9b88ed3bab, type: 3}
 --- !u!1 &8185104129718493783
 GameObject:
   m_ObjectHideFlags: 0
@@ -365,7 +367,7 @@ Canvas:
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
   m_VertexColorAlwaysGammaSpace: 0
-  m_AdditionalShaderChannelsFlag: 0
+  m_AdditionalShaderChannelsFlag: 25
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
   m_SortingOrder: 6
