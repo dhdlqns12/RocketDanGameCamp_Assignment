@@ -120,5 +120,5 @@ UIManager (ManagerRoot 하위, 전역 관리)
 ---
  
 ## 📸 시연영상
-[![플레이 영상](https://img.youtube.com/vi/Zua7teOQ7Wo/0.jpg)](https://www.youtube.com/watch?v=Zua7teOQ7Wo)
+(https://www.youtube.com/watch?v=Zua7teOQ7Wo)
  
