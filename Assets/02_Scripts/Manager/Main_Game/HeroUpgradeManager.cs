@@ -9,6 +9,7 @@ namespace StarDefense.Managers
 {
     /// <summary>
     /// 영웅 승급/초월 매니저
+    /// HeroRegistry 인스턴스 참조
     /// </summary>
     public class HeroUpgradeManager : MonoBehaviour
     {
@@ -18,12 +19,12 @@ namespace StarDefense.Managers
         private HeroRegistryManager heroRegistryManager;
 
         #region 초기화
-        public void Init(HeroSummonManager mSummonManager, ProjectilePool mProjectilePool, MapManager mMapManager, HeroRegistryManager mHeroRegistry)
+        public void Init(HeroSummonManager mSummonManager, ProjectilePool mProjectilePool, MapManager mMapManager, HeroRegistryManager mHeroRegistryManager)
         {
             summonManager = mSummonManager;
             projectilePool = mProjectilePool;
             mapManager = mMapManager;
-            heroRegistryManager = mHeroRegistry;
+            heroRegistryManager = mHeroRegistryManager;
         }
         #endregion
 
@@ -64,7 +65,15 @@ namespace StarDefense.Managers
 
             foreach (HeroBase hero in heroes)
             {
-                hero.SetUpgradeIndicator(canUpgrade);
+                // 초월 가능하면 승급 표시 끄기
+                if (hero.CanTranscend)
+                {
+                    hero.SetUpgradeIndicator(false);
+                }
+                else
+                {
+                    hero.SetUpgradeIndicator(canUpgrade);
+                }
             }
         }
         #endregion
@@ -98,6 +107,7 @@ namespace StarDefense.Managers
 
             if (nextHeroData == null)
             {
+                Debug.LogError($"{nextRarity} 등급 데이터 없음");
                 return false;
             }
 

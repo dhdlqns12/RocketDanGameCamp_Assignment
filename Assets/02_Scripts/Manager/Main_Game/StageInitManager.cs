@@ -6,6 +6,7 @@ using StarDefense.Enemy;
 using StarDefense.Hero;
 using StarDefense.Map;
 using StarDefense.UI;
+
 namespace StarDefense.Managers
 {
     public class StageInitManager : MonoBehaviour
@@ -37,6 +38,7 @@ namespace StarDefense.Managers
         public Gold Gold => gold;
         public Mineral Mineral => mineral;
         public Commander Commander => commander;
+
         #region 유니티 Event
         private void Start()
         {
@@ -98,12 +100,14 @@ namespace StarDefense.Managers
             // 타일 입력
             tileInputHandler.Init(gold, ManagerRoot.Instance.UIManager);
 
-            // 웨이브
+            // 웨이브 
             waveManager.Init(stageId);
-            waveManager.StartWaveSequence();
 
             // UI 의존성 주입
             InitializeUI();
+
+            // 웨이브 시작
+            waveManager.StartWaveSequence();
         }
 
         private void InitializeUI()
@@ -138,7 +142,7 @@ namespace StarDefense.Managers
                 probePanel.SetDependencies(probeManager, gold);
             }
 
-            // 재화 표시 (모든 Canvas 하위 CurrencyUI Init)
+            // 재화 표시
             CurrencyUI[] currencyUIs = uiManager.GetAllCurrencyUIs();
             foreach (CurrencyUI currencyUI in currencyUIs)
             {
@@ -160,6 +164,12 @@ namespace StarDefense.Managers
             commander = commanderObj.GetComponent<Commander>();
             commander.Init(projectilePool);
             commander.OnCommanderDead += OnGameOver;
+
+            CommanderHpBar hpBar = commanderObj.GetComponentInChildren<CommanderHpBar>();
+            if (hpBar != null)
+            {
+                hpBar.Init(commander);
+            }
         }
         #endregion
 

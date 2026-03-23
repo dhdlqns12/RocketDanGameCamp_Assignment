@@ -125,10 +125,12 @@ namespace StarDefense.Map
             {
                 Vector3 tileWorldPos = mapManager.GridToWorldPosition(gridPos.x, gridPos.y);
 
-                // 영웅 클릭 시 항상 스탯 표시
-                heroStatPopupUI.Show(hero);
+                if (heroStatPopupUI != null)
+                {
+                    heroStatPopupUI.SetHeroData(hero);
+                    uiManager.ShowPanel<HeroStatPopupUI>();
+                }
 
-                // 1. Unique → 초월 버튼
                 if (upgradeManager.CanTranscend(hero))
                 {
                     selectedHero = hero;
@@ -141,7 +143,6 @@ namespace StarDefense.Map
                     return;
                 }
 
-                // 2. 승급 가능 → 승급
                 if (upgradeManager.CanUpgrade(hero))
                 {
                     selectedHero = hero;
@@ -153,11 +154,9 @@ namespace StarDefense.Map
                     return;
                 }
 
-                // 3. 액션 없는 영웅 → 스탯만 표시
                 return;
             }
 
-            // 3. FixBlock → 수리
             int tileType = mapManager.GetTileType(gridPos.x, gridPos.y);
 
             if (tileType == 2)
@@ -174,7 +173,6 @@ namespace StarDefense.Map
                 return;
             }
 
-            // 4. 배치 가능 → 소환
             if (mapManager.CanPlaceHero(gridPos.x, gridPos.y))
             {
                 selectedTile = gridPos;
@@ -198,7 +196,7 @@ namespace StarDefense.Map
         private void HideAllTilePopups()
         {
             uiManager.CloseAllTilePopups();
-            heroStatPopupUI.Close();
+            uiManager.ClosePanel<HeroStatPopupUI>();
             activeUI = ActiveUI.None;
             activeCost = 0;
         }

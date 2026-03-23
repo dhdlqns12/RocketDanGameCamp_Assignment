@@ -8,7 +8,7 @@ using StarDefense.Hero;
 namespace StarDefense.Managers
 {
     /// <summary>
-    /// 강화 시스템. HeroRegistry 인스턴스 참조
+    /// 강화 시스템
     /// 등급별 능력치 강화 + 뽑기 확률 강화
     /// </summary>
     public class StatUpgradeManager : MonoBehaviour

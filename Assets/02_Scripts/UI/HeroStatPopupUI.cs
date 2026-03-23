@@ -2,6 +2,7 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+
 namespace StarDefense.UI
 {
     /// <summary>
@@ -31,10 +32,8 @@ namespace StarDefense.UI
         #endregion
 
         #region 표시
-        public void Show(HeroBase hero)
+        public void SetHeroData(HeroBase hero)
         {
-            base.Show();
-
             Sprite heroSprite = Resources.Load<Sprite>($"Sprite/Hero/{hero.heroId}");
 
             if (heroSprite != null && heroImage != null)
