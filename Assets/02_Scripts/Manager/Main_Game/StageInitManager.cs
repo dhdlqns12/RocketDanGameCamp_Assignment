@@ -6,7 +6,6 @@ using StarDefense.Enemy;
 using StarDefense.Hero;
 using StarDefense.Map;
 using StarDefense.UI;
-
 namespace StarDefense.Managers
 {
     public class StageInitManager : MonoBehaviour
@@ -54,6 +53,11 @@ namespace StarDefense.Managers
             {
                 commander.OnCommanderDead -= OnGameOver;
             }
+
+            if (waveManager != null)
+            {
+                waveManager.OnAllWavesCleared -= OnVictory;
+            }
         }
         #endregion
 
@@ -100,8 +104,9 @@ namespace StarDefense.Managers
             // 타일 입력
             tileInputHandler.Init(gold, ManagerRoot.Instance.UIManager);
 
-            // 웨이브 
+            // 웨이브
             waveManager.Init(stageId);
+            waveManager.OnAllWavesCleared += OnVictory;
 
             // UI 의존성 주입
             InitializeUI();
@@ -142,7 +147,7 @@ namespace StarDefense.Managers
                 probePanel.SetDependencies(probeManager, gold);
             }
 
-            // 재화 표시
+            // 재화 표시 
             CurrencyUI[] currencyUIs = uiManager.GetAllCurrencyUIs();
             foreach (CurrencyUI currencyUI in currencyUIs)
             {
@@ -191,7 +196,20 @@ namespace StarDefense.Managers
 
         private void OnGameOver()
         {
-            Time.timeScale = 0;
+            var resultPanel = ManagerRoot.Instance.UIManager.GetPanel<GameResultPanelUI>();
+            if (resultPanel != null)
+            {
+                resultPanel.ShowDefeat();
+            }
+        }
+
+        private void OnVictory()
+        {
+            var resultPanel = ManagerRoot.Instance.UIManager.GetPanel<GameResultPanelUI>();
+            if (resultPanel != null)
+            {
+                resultPanel.ShowVictory();
+            }
         }
         #endregion
     }

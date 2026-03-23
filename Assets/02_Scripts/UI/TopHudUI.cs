@@ -50,7 +50,7 @@ namespace StarDefense.UI
         #region UI 갱신
         private void OnWaveChanged(int currentWave, int totalWaves)
         {
-            waveText.text = $"{currentWave}/{totalWaves}";
+            waveText.text = $"웨이브: {currentWave}/{totalWaves}";
         }
         #endregion
     }
