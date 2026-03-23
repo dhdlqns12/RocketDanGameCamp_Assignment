@@ -1,48 +1,55 @@
 ﻿using StarDefense.Map;
-using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace StarDefense.UI
 {
     /// <summary>
-    /// 승급 UI. 승급 가능 영웅 클릭 시 표시
+    /// 승급 UI
     /// </summary>
-    public class UpgradeUI : MonoBehaviour
+    public class UpgradeUI : UIBase
     {
         [SerializeField] private Button upgradeButton;
-        [SerializeField] private TextMeshProUGUI upgradeText;
-        [SerializeField] private TileInputHandler tileInputHandler;
 
         [Header("위치 오프셋")]
         [SerializeField] private Vector2 offset = new Vector2(0f, -50f);
 
-        private RectTransform buttonRect;
+        private RectTransform rectTransform;
         private Camera mainCamera;
+        private TileInputHandler tileInputHandler;
 
-        #region 유니티 Event
-        private void Awake()
+        #region 초기화
+        protected override void SetupUI()
         {
-            buttonRect = upgradeButton.GetComponent<RectTransform>();
+            rectTransform = GetComponent<RectTransform>();
             mainCamera = Camera.main;
+        }
 
-            upgradeButton.onClick.AddListener(OnUpgradeButtonClicked);
-            Hide();
+        public void SetTileInputHandler(TileInputHandler handler)
+        {
+            tileInputHandler = handler;
         }
         #endregion
 
-        #region UI 표시/숨김
-        public void Show(Vector3 tileWorldPos)
+        #region 이벤트 구독
+        protected override void SubscribeEvents()
         {
-            upgradeButton.gameObject.SetActive(true);
-
-            Vector2 screenPos = mainCamera.WorldToScreenPoint(tileWorldPos);
-            buttonRect.position = screenPos + offset;
+            upgradeButton.onClick.AddListener(OnUpgradeButtonClicked);
         }
 
-        public void Hide()
+        protected override void UnsubscribeEvents()
         {
-            upgradeButton.gameObject.SetActive(false);
+            upgradeButton.onClick.RemoveListener(OnUpgradeButtonClicked);
+        }
+        #endregion
+
+        #region 표시
+        public void Show(Vector3 tileWorldPos)
+        {
+            base.Show();
+
+            Vector2 screenPos = mainCamera.WorldToScreenPoint(tileWorldPos);
+            rectTransform.position = screenPos + offset;
         }
         #endregion
 

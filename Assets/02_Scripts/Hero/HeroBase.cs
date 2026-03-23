@@ -26,6 +26,7 @@ namespace StarDefense.Hero
         private Sprite projectileSprite;
 
         public int heroId { get; private set; }
+        public string heroName;
 
         private HeroRarity rarity;
         private float attackRange;
@@ -79,6 +80,7 @@ namespace StarDefense.Hero
         public void Init(Data.HeroData heroData, ProjectilePool mProjectilePool)
         {
             heroId = heroData.heroId;
+            heroName = heroData.heroName;
             rarity = System.Enum.Parse<HeroRarity>(heroData.rarity);
             tribe = System.Enum.Parse<HeroTribe>(heroData.tribe);
             attackDamage = heroData.attackDamage;

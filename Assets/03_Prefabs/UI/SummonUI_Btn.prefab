@@ -19,7 +19,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &994993460037655543
 RectTransform:
   m_ObjectHideFlags: 0
@@ -135,10 +135,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3aeaffecc3983b749b12373473e2ce6c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  uiType: 2
   summonButton: {fileID: 71347437599486265}
-  summonText: {fileID: 5536340720851385199}
   priceText: {fileID: 3791494189759839731}
-  tileInputHandler: {fileID: 0}
   offset: {x: 0, y: 15}
 --- !u!1 &4720206706160333389
 GameObject:

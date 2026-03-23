@@ -9,40 +9,53 @@ namespace StarDefense.UI
     /// <summary>
     /// 초월 선택지 UI
     /// </summary>
-    public class TranscendSelectUI : MonoBehaviour
+    public class TranscendSelectUI : UIBase
     {
         [Header("선택지 버튼(임시)")]
         [SerializeField] private Button[] optionButtons;
         [SerializeField] private TextMeshProUGUI[] optionNames;
 
-        [Header("패널")]
-        [SerializeField] private GameObject panel;
-
-        [SerializeField] private TileInputHandler tileInputHandler;
-
+        private TileInputHandler tileInputHandler;
         private HeroData[] currentOptions;
 
-        #region 유니티 Event
-        private void Awake()
+        #region 초기화
+        protected override void SetupUI()
+        {
+        }
+
+        public void SetTileInputHandler(TileInputHandler handler)
+        {
+            tileInputHandler = handler;
+        }
+        #endregion
+
+        #region 이벤트 구독
+        protected override void SubscribeEvents()
         {
             for (int i = 0; i < optionButtons.Length; i++)
             {
                 int index = i;
                 optionButtons[i].onClick.AddListener(() => OnOptionSelected(index));
             }
+        }
 
-            Hide();
+        protected override void UnsubscribeEvents()
+        {
+            for (int i = 0; i < optionButtons.Length; i++)
+            {
+                optionButtons[i].onClick.RemoveAllListeners();
+            }
         }
         #endregion
 
-        #region UI 표시/숨김
+        #region 표시
         public void Show(HeroData[] options)
         {
             if (options == null || options.Length == 0) return;
 
             currentOptions = options;
 
-            panel.SetActive(true);
+            base.Show();
 
             for (int i = 0; i < optionButtons.Length; i++)
             {
@@ -58,9 +71,8 @@ namespace StarDefense.UI
             }
         }
 
-        public void Hide()
+        protected override void OnClose()
         {
-            panel.SetActive(false);
             currentOptions = null;
         }
         #endregion
@@ -72,7 +84,7 @@ namespace StarDefense.UI
 
             tileInputHandler.OnTranscendConfirmed(currentOptions[index]);
 
-            Hide();
+            Close();
         }
         #endregion
     }

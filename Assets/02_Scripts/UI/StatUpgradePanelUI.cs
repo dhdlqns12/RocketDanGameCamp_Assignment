@@ -1,4 +1,5 @@
 ﻿using StarDefense.Core;
+using StarDefense.Currency;
 using StarDefense.Managers;
 using TMPro;
 using UnityEngine;
@@ -7,16 +8,10 @@ using UnityEngine.UI;
 namespace StarDefense.UI
 {
     /// <summary>
-    /// 강화 UI
+    /// 강화 패널
     /// </summary>
-    public class UpgradeStatUI : MonoBehaviour
+    public class StatUpgradePanelUI : UIBase
     {
-        [Header("토글 버튼 (HUDCanvas)")]
-        [SerializeField] private Button upgradeToggleButton;
-
-        [Header("강화 패널 (PanelCanvas)")]
-        [SerializeField] private GameObject upgradePanel;
-
         [Header("CommonRare")]
         [SerializeField] private Button commonRareButton;
         [SerializeField] private TextMeshProUGUI commonRareLevelText;
@@ -41,34 +36,27 @@ namespace StarDefense.UI
         [SerializeField] private TextMeshProUGUI summonRatePrice;
         [SerializeField] private Image summonRateCurrencyImg;
 
+        [Header("닫기")]
+        [SerializeField] private Button closeButton;
+
         private StatUpgradeManager statUpgradeManager;
         private int currentGold;
 
         #region 초기화
-        public void Init(StatUpgradeManager mStatUpgradeManager, Currency.Gold gold)
+        protected override void SetupUI()
         {
-            statUpgradeManager = mStatUpgradeManager;
-
-            upgradeToggleButton.onClick.AddListener(Toggle);
-            commonRareButton.onClick.AddListener(() => OnUpgradeClicked(UpgradeType.CommonRare));
-            epicButton.onClick.AddListener(() => OnUpgradeClicked(UpgradeType.Epic));
-            uniqueLegendButton.onClick.AddListener(() => OnUpgradeClicked(UpgradeType.UniqueLegend));
-            summonRateButton.onClick.AddListener(() => OnUpgradeClicked(UpgradeType.SummonRate));
-
-            statUpgradeManager.OnUpgradeLevelChanged += OnUpgradeLevelChanged;
-            gold.OnGoldChanged += OnGoldChanged;
-
-            currentGold = gold.CurrentGold;
-
             SetCurrencyIcons();
-
-            Hide();
         }
 
-        /// <summary>
-        /// UpgradeType에 따라 재화 아이콘 동적 로드
-        /// Resources/Sprite/Currency/Gold, Mineral
-        /// </summary>
+        public void SetDependencies(StatUpgradeManager mStatUpgradeManager, Gold mGold)
+        {
+            statUpgradeManager = mStatUpgradeManager;
+            currentGold = mGold.CurrentGold;
+
+            statUpgradeManager.OnUpgradeLevelChanged += OnUpgradeLevelChanged;
+            mGold.OnGoldChanged += OnGoldChanged;
+        }
+
         private void SetCurrencyIcons()
         {
             SetCurrencyIcon(UpgradeType.CommonRare, commonRareCurrencyImg);
@@ -90,9 +78,6 @@ namespace StarDefense.UI
             }
         }
 
-        /// <summary>
-        /// UpgradeType별 사용 재화 결정. 추후 변경 시 여기만 수정
-        /// </summary>
         private string GetCurrencySpriteName(UpgradeType type)
         {
             return type switch
@@ -106,28 +91,30 @@ namespace StarDefense.UI
         }
         #endregion
 
-        #region UI 표시/숨김
-        public void Show()
+        #region 이벤트 구독
+        protected override void SubscribeEvents()
         {
-            upgradePanel.SetActive(true);
+            commonRareButton.onClick.AddListener(() => OnUpgradeClicked(UpgradeType.CommonRare));
+            epicButton.onClick.AddListener(() => OnUpgradeClicked(UpgradeType.Epic));
+            uniqueLegendButton.onClick.AddListener(() => OnUpgradeClicked(UpgradeType.UniqueLegend));
+            summonRateButton.onClick.AddListener(() => OnUpgradeClicked(UpgradeType.SummonRate));
+            closeButton.onClick.AddListener(OnCloseClicked);
+        }
+
+        protected override void UnsubscribeEvents()
+        {
+            commonRareButton.onClick.RemoveAllListeners();
+            epicButton.onClick.RemoveAllListeners();
+            uniqueLegendButton.onClick.RemoveAllListeners();
+            summonRateButton.onClick.RemoveAllListeners();
+            closeButton.onClick.RemoveAllListeners();
+        }
+        #endregion
+
+        #region 표시
+        protected override void OnShow()
+        {
             RefreshAll();
-        }
-
-        public void Hide()
-        {
-            upgradePanel.SetActive(false);
-        }
-
-        public void Toggle()
-        {
-            if (upgradePanel.activeSelf)
-            {
-                Hide();
-            }
-            else
-            {
-                Show();
-            }
         }
         #endregion
 
@@ -152,14 +139,17 @@ namespace StarDefense.UI
 
         private void OnUpgradeLevelChanged(UpgradeType type, int level, int nextCost)
         {
-            RefreshAll();
+            if (gameObject.activeSelf)
+            {
+                RefreshAll();
+            }
         }
 
         private void OnGoldChanged(int gold, int delta)
         {
             currentGold = gold;
 
-            if (upgradePanel.activeSelf)
+            if (gameObject.activeSelf)
             {
                 RefreshAll();
             }
@@ -170,6 +160,11 @@ namespace StarDefense.UI
         private void OnUpgradeClicked(UpgradeType type)
         {
             statUpgradeManager.TryUpgrade(type);
+        }
+
+        private void OnCloseClicked()
+        {
+            ManagerRoot.Instance.UIManager.ClosePanel<StatUpgradePanelUI>();
         }
         #endregion
     }

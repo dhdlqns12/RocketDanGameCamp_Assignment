@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using StarDefense.Data;
 using StarDefense.Enemy;
+using System;
 
 namespace StarDefense.Managers
 {
@@ -25,6 +26,8 @@ namespace StarDefense.Managers
         public bool IsWaveActive => isWaveActive;
         public float FirstWaveDelay => firstWaveDelay;
         public float BetweenWaveDelay => betweenWaveDelay;
+
+        public event Action<int, int> OnWaveChanged;
 
         #region 초기화
         public void Init(int mStageId)
@@ -59,6 +62,7 @@ namespace StarDefense.Managers
 
             while (currentWaveIndex < TotalWaves)
             {
+                OnWaveChanged?.Invoke(CurrentWave, TotalWaves);
                 yield return StartCoroutine(RunWaveCoroutine());
 
                 currentWaveIndex++;

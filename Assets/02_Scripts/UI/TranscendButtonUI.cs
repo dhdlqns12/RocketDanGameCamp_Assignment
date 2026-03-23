@@ -2,50 +2,58 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-
 namespace StarDefense.UI
 {
     /// <summary>
-    /// 초월 비용 버튼
+    /// 초월 비용 버튼. Unique 영웅 클릭 시 타일 위치에 표시 (TilePopup)
     /// </summary>
-    public class TranscendButtonUI : MonoBehaviour
+    public class TranscendButtonUI : UIBase
     {
         [SerializeField] private Button transcendButton;
         [SerializeField] private TextMeshProUGUI priceText;
-        [SerializeField] private TileInputHandler tileInputHandler;
 
         [Header("위치 오프셋")]
         [SerializeField] private Vector2 offset = new Vector2(0f, 15f);
 
-        private RectTransform buttonRect;
+        private RectTransform rectTransform;
         private Camera mainCamera;
+        private TileInputHandler tileInputHandler;
 
-        #region 유니티 Event
-        private void Awake()
+        #region 초기화
+        protected override void SetupUI()
         {
-            buttonRect = transcendButton.GetComponent<RectTransform>();
+            rectTransform = GetComponent<RectTransform>();
             mainCamera = Camera.main;
+        }
 
-            transcendButton.onClick.AddListener(OnTranscendButtonClicked);
-            Hide();
+        public void SetTileInputHandler(TileInputHandler handler)
+        {
+            tileInputHandler = handler;
         }
         #endregion
 
-        #region UI 표시/숨김
+        #region 이벤트 구독
+        protected override void SubscribeEvents()
+        {
+            transcendButton.onClick.AddListener(OnTranscendButtonClicked);
+        }
+
+        protected override void UnsubscribeEvents()
+        {
+            transcendButton.onClick.RemoveListener(OnTranscendButtonClicked);
+        }
+        #endregion
+
+        #region 표시
         public void Show(Vector3 tileWorldPos, int cost, int currentGold)
         {
-            transcendButton.gameObject.SetActive(true);
+            base.Show();
 
             priceText.text = $"{cost}G";
             priceText.color = currentGold >= cost ? Color.white : Color.red;
 
             Vector2 screenPos = mainCamera.WorldToScreenPoint(tileWorldPos);
-            buttonRect.position = screenPos + offset;
-        }
-
-        public void Hide()
-        {
-            transcendButton.gameObject.SetActive(false);
+            rectTransform.position = screenPos + offset;
         }
 
         public void UpdatePriceColor(int currentGold, int cost)

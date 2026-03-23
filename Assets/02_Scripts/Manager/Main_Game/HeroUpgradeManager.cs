@@ -9,7 +9,6 @@ namespace StarDefense.Managers
 {
     /// <summary>
     /// 영웅 승급/초월 매니저
-    /// HeroRegistry 인스턴스 참조
     /// </summary>
     public class HeroUpgradeManager : MonoBehaviour
     {
@@ -25,8 +24,6 @@ namespace StarDefense.Managers
             projectilePool = mProjectilePool;
             mapManager = mMapManager;
             heroRegistryManager = mHeroRegistry;
-
-            Debug.Log("[HeroUpgradeManager] 초기화 완료");
         }
         #endregion
 

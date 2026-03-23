@@ -2,53 +2,59 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+
 namespace StarDefense.UI
 {
     /// <summary>
     /// 소환 UI
     /// </summary>
-    public class SummonUI : MonoBehaviour
+    public class SummonUI : UIBase
     {
         [SerializeField] private Button summonButton;
-        [SerializeField] private TextMeshProUGUI summonText;
         [SerializeField] private TextMeshProUGUI priceText;
-        [SerializeField] private TileInputHandler tileInputHandler;
 
         [Header("위치 오프셋")]
-        [SerializeField] private Vector2 offset = new Vector2(0f, -50f);
+        [SerializeField] private Vector2 offset = new Vector2(0f, -15f);
 
-        private RectTransform buttonRect;
+        private RectTransform rectTransform;
         private Camera mainCamera;
+        private TileInputHandler tileInputHandler;
 
-        #region 유니티 Event
-        private void Awake()
+        #region 초기화
+        protected override void SetupUI()
         {
-            buttonRect = summonButton.GetComponent<RectTransform>();
+            rectTransform = GetComponent<RectTransform>();
             mainCamera = Camera.main;
+        }
 
-            summonButton.onClick.AddListener(OnSummonButtonClicked);
-            Hide();
+        public void SetTileInputHandler(TileInputHandler handler)
+        {
+            tileInputHandler = handler;
         }
         #endregion
 
-        #region UI 표시/숨김
-        /// <summary>
-        /// 타일 월드 좌표에 버튼을 표시
-        /// </summary>
+        #region 이벤트 구독
+        protected override void SubscribeEvents()
+        {
+            summonButton.onClick.AddListener(OnSummonButtonClicked);
+        }
+
+        protected override void UnsubscribeEvents()
+        {
+            summonButton.onClick.RemoveListener(OnSummonButtonClicked);
+        }
+        #endregion
+
+        #region 표시
         public void Show(Vector3 tileWorldPos, int cost, int currentGold)
         {
-            summonButton.gameObject.SetActive(true);
+            base.Show();
 
             priceText.text = $"{cost}G";
             priceText.color = currentGold >= cost ? Color.white : Color.red;
 
             Vector2 screenPos = mainCamera.WorldToScreenPoint(tileWorldPos);
-            buttonRect.position = screenPos + offset;
-        }
-
-        public void Hide()
-        {
-            summonButton.gameObject.SetActive(false);
+            rectTransform.position = screenPos + offset;
         }
 
         public void UpdatePriceColor(int currentGold, int cost)

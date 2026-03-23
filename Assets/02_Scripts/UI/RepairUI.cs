@@ -2,49 +2,58 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+
 namespace StarDefense.UI
 {
     /// <summary>
     /// 수리 UI
     /// </summary>
-    public class RepairUI : MonoBehaviour
+    public class RepairUI : UIBase
     {
         [SerializeField] private Button repairButton;
         [SerializeField] private TextMeshProUGUI priceText;
-        [SerializeField] private TileInputHandler tileInputHandler;
 
         [Header("위치 오프셋")]
         [SerializeField] private Vector2 offset = new Vector2(0f, -50f);
 
-        private RectTransform buttonRect;
+        private RectTransform rectTransform;
         private Camera mainCamera;
-
-        #region 유니티 Event
-        private void Awake()
+        private TileInputHandler tileInputHandler;
+        #region 초기화
+        protected override void SetupUI()
         {
-            buttonRect = repairButton.GetComponent<RectTransform>();
+            rectTransform = GetComponent<RectTransform>();
             mainCamera = Camera.main;
+        }
 
-            repairButton.onClick.AddListener(OnRepairButtonClicked);
-            Hide();
+        public void SetTileInputHandler(TileInputHandler handler)
+        {
+            tileInputHandler = handler;
         }
         #endregion
 
-        #region UI 표시/숨김
+        #region 이벤트 구독
+        protected override void SubscribeEvents()
+        {
+            repairButton.onClick.AddListener(OnRepairButtonClicked);
+        }
+
+        protected override void UnsubscribeEvents()
+        {
+            repairButton.onClick.RemoveListener(OnRepairButtonClicked);
+        }
+        #endregion
+
+        #region 표시
         public void Show(Vector3 tileWorldPos, int cost, int currentGold)
         {
-            repairButton.gameObject.SetActive(true);
+            base.Show();
 
             priceText.text = $"{cost}G";
             priceText.color = currentGold >= cost ? Color.white : Color.red;
 
             Vector2 screenPos = mainCamera.WorldToScreenPoint(tileWorldPos);
-            buttonRect.position = screenPos + offset;
-        }
-
-        public void Hide()
-        {
-            repairButton.gameObject.SetActive(false);
+            rectTransform.position = screenPos + offset;
         }
 
         public void UpdatePriceColor(int currentGold, int cost)

@@ -35,6 +35,14 @@
         TranscendButton,
         TranscendSelect
     }
+
+    public enum UIType
+    {
+        Scene,
+        Popup,
+        TilePopup
+    }
+
     #endregion
 
     #region Upgrade

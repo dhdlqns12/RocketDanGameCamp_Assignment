@@ -403,7 +403,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9e722f082513d364d851e94b118f811b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  uiType: 2
   repairButton: {fileID: 7554282251211154826}
   priceText: {fileID: 8098480705534599379}
-  tileInputHandler: {fileID: 0}
   offset: {x: 0, y: 15}

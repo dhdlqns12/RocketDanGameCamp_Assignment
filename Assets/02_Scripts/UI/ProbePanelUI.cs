@@ -1,4 +1,5 @@
-﻿using StarDefense.Currency;
+﻿using StarDefense.Core;
+using StarDefense.Currency;
 using StarDefense.Managers;
 using TMPro;
 using UnityEngine;
@@ -7,63 +8,49 @@ using UnityEngine.UI;
 namespace StarDefense.UI
 {
     /// <summary>
-    /// 탐사정 UI
-    /// BottomCanvas > Probe_Btn → 패널 토글
-    /// PanelCanvas > ProbePanel → 구매 버튼 + 수량/비용
+    /// 탐사정 패널 (Popup)
     /// </summary>
-    public class ProbeUI : MonoBehaviour
+    public class ProbePanelUI : UIBase
     {
-        [Header("토글 버튼 (BottomCanvas)")]
-        [SerializeField] private Button probeToggleButton;
-
-        [Header("패널 (PanelCanvas)")]
-        [SerializeField] private GameObject probePanel;
         [SerializeField] private Button buyButton;
         [SerializeField] private Button closeButton;
         [SerializeField] private TextMeshProUGUI costText;
 
         private ProbeManager probeManager;
         private Gold gold;
-
         #region 초기화
-        public void Init(ProbeManager mProbeManager, Gold mGold)
+        protected override void SetupUI()
+        {
+        }
+
+        public void SetDependencies(ProbeManager mProbeManager, Gold mGold)
         {
             probeManager = mProbeManager;
             gold = mGold;
 
-            probeToggleButton.onClick.AddListener(Toggle);
-            buyButton.onClick.AddListener(OnBuyClicked);
-            closeButton.onClick.AddListener(Hide);
-
             probeManager.OnProbeCountChanged += OnProbeCountChanged;
             gold.OnGoldChanged += OnGoldChanged;
-
-            Hide();
         }
         #endregion
 
-        #region UI 표시/숨김
-        public void Show()
+        #region 이벤트 구독
+        protected override void SubscribeEvents()
         {
-            probePanel.SetActive(true);
+            buyButton.onClick.AddListener(OnBuyClicked);
+            closeButton.onClick.AddListener(OnCloseClicked);
+        }
+
+        protected override void UnsubscribeEvents()
+        {
+            buyButton.onClick.RemoveListener(OnBuyClicked);
+            closeButton.onClick.RemoveListener(OnCloseClicked);
+        }
+        #endregion
+
+        #region 표시
+        protected override void OnShow()
+        {
             Refresh();
-        }
-
-        public void Hide()
-        {
-            probePanel.SetActive(false);
-        }
-
-        public void Toggle()
-        {
-            if (probePanel.activeSelf)
-            {
-                Hide();
-            }
-            else
-            {
-                Show();
-            }
         }
         #endregion
 
@@ -80,7 +67,7 @@ namespace StarDefense.UI
 
         private void OnProbeCountChanged(int count, int max)
         {
-            if (probePanel.activeSelf)
+            if (gameObject.activeSelf)
             {
                 Refresh();
             }
@@ -88,7 +75,7 @@ namespace StarDefense.UI
 
         private void OnGoldChanged(int currentGold, int delta)
         {
-            if (probePanel.activeSelf)
+            if (gameObject.activeSelf)
             {
                 Refresh();
             }
@@ -99,6 +86,11 @@ namespace StarDefense.UI
         private void OnBuyClicked()
         {
             probeManager.TryBuyProbe();
+        }
+
+        private void OnCloseClicked()
+        {
+            ManagerRoot.Instance.UIManager.ClosePanel<ProbePanelUI>();
         }
         #endregion
     }
