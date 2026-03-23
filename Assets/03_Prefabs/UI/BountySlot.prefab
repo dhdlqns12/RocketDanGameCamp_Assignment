@@ -55,7 +55,6 @@ MonoBehaviour:
   hpText: {fileID: 6742436075090718214}
   rewardText: {fileID: 8266235154901757989}
   rewardIcon: {fileID: 593408093425682377}
-  cooldownText: {fileID: 0}
 --- !u!1 &3613818854946222572
 GameObject:
   m_ObjectHideFlags: 0
@@ -557,8 +556,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 24
-  m_fontSizeBase: 24
+  m_fontSize: 20
+  m_fontSizeBase: 20
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18

@@ -27,6 +27,8 @@ namespace StarDefense.Managers
         [SerializeField] private BountyManager bountyManager;
         [SerializeField] private BountyUI bountyUI;
         [SerializeField] private EnemyPool enemyPool;
+        [SerializeField] private ProbeManager probeManager;
+        [SerializeField] private ProbeUI probeUI;
 
         [Header("지휘관")]
         [SerializeField] private GameObject commanderPrefab;
@@ -101,6 +103,10 @@ namespace StarDefense.Managers
             bountyManager.Init(mapManager, enemyPool);
             bountyUI.Init(bountyManager);
 
+            // 탐사정 초기화
+            probeManager.Init(gold, mineral);
+            probeUI.Init(probeManager, gold);
+
             // 웨이브 (맵 경로 데이터 필요)
             waveManager.Init(stageId);
 
@@ -153,6 +159,8 @@ namespace StarDefense.Managers
         /// </summary>
         private void OnGameOver()
         {
+            Debug.Log("[StageInitManager] Game Over!");
+
             // TODO: 게임 오버 UI 표시
             Time.timeScale = 0f;
         }
