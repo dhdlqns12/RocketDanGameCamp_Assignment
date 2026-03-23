@@ -1,4 +1,4 @@
-# ⭐ Star Defense: 유즈맵 TD 모작
+# ⭐ Star Defense: TD 모작
  
 스타크래프트 유즈맵 디펜스를 모티브로 한 2D 타워 디펜스 모바일 게임
  
